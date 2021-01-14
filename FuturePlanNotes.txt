@@ -1,0 +1,2 @@
+Replace structure IDs with just positions, only get and interact with structure when creep is next to
+position.
