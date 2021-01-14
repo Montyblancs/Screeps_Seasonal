@@ -24,8 +24,8 @@ var creep_farMinerSK = {
                     Memory.warMode = true;
                     Game.notify('War mode has been enabled.');
                 }
-                creep.room.createFlag(Game.flags[creep.memory.targetFlag].pos, creep.memory.targetFlag + ";" + targetTime.toString());
-                Game.flags[creep.memory.targetFlag].remove();
+                //creep.room.createFlag(Game.flags[creep.memory.targetFlag].pos, creep.memory.targetFlag + ";" + targetTime.toString());
+                //Game.flags[creep.memory.targetFlag].remove();
             } else if (hostiles.length > 0 && hostiles[0].owner.username == 'Invader') {
                 //If there are no remaning allies, then the miners lost to an invasion. Time out all flags in this room for 1500 ticks.
                 let farMiners = creep.room.find(FIND_MY_CREEPS, {
@@ -33,13 +33,13 @@ var creep_farMinerSK = {
                 })
                 if (!farMiners.length) {
                     if (Game.flags[thisRoom.name + "FarMining"] && Game.flags[thisRoom.name + "FarMining"].pos.roomName == creep.pos.roomName) {
-                        creep.room.createFlag(Game.flags[thisRoom.name + "FarMining"].pos, thisRoom.name + "FarMining" + ";" + targetTime.toString());
-                        Game.flags[thisRoom.name + "FarMining"].remove();
+                        //creep.room.createFlag(Game.flags[thisRoom.name + "FarMining"].pos, thisRoom.name + "FarMining" + ";" + targetTime.toString());
+                        //Game.flags[thisRoom.name + "FarMining"].remove();
                     }
                     for (i = 2; i < 10; i++) {
                         if (Game.flags[thisRoom.name + "FarMining" + i.toString()] && Game.flags[thisRoom.name + "FarMining" + i.toString()].pos.roomName == creep.pos.roomName) {
-                            creep.room.createFlag(Game.flags[thisRoom.name + "FarMining" + i.toString()].pos, thisRoom.name + "FarMining" + i.toString() + ";" + targetTime.toString());
-                            Game.flags[thisRoom.name + "FarMining" + i.toString()].remove();
+                            //creep.room.createFlag(Game.flags[thisRoom.name + "FarMining" + i.toString()].pos, thisRoom.name + "FarMining" + i.toString() + ";" + targetTime.toString());
+                            //Game.flags[thisRoom.name + "FarMining" + i.toString()].remove();
                         }
                     }
                 }
