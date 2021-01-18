@@ -58,13 +58,13 @@ var creep_farMinerSK = {
             });
 
             eCores = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {
-                filter: (eStruct) => (eStruct.owner.username == 'Invader')
+                filter: (eStruct) => (eStruct.structureType == STRUCTURE_INVADER_CORE)
             })
 
             if (eCores && eCores.effects) {
                 //Hostile core is active, shut down operations until timer is up.
                 for (let thisPower in eCores.effects) {
-                    if (eCores.effects[thisPower].effect == EFFECT_COLLAPSE_TIMER && Game.flags[creep.memory.targetFlag]) {
+                    if (eCores.effects[thisPower].effect == EFFECT_COLLAPSE_TIMER && eCores.effects[thisPower].ticksRemaining > 0 && Game.flags[creep.memory.targetFlag]) {
                         let targetTime = Game.time + eCores.effects[thisPower].ticksRemaining;
                         creep.room.createFlag(Game.flags[creep.memory.targetFlag].pos, creep.memory.targetFlag + ";" + targetTime.toString());
                         Game.flags[creep.memory.targetFlag].remove();                        
