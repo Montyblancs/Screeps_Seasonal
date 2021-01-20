@@ -443,7 +443,11 @@ var spawn_BuildInstruction = {
                 break;
             case 'scoreRunner':
                 var runners = _.filter(Game.creeps, (creep) => (creep.memory.priority == 'scoreRunner' && creep.memory.homeRoom == spawn.room.name));
-                if (runners.length < 1) {
+                let runnerMax = 1;
+                if (params2 >= 30000) {
+                    runnerMax = 3;
+                }
+                if (runners.length < runnerMax) {
                     let mConfig = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL];
                     if (spawn.room.energyCapacityAvailable >= 2900) {
                         mConfig = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL];

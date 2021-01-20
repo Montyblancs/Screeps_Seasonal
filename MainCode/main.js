@@ -966,7 +966,7 @@ module.exports.loop = function() {
                 if (Memory.postObserveTick && Memory.observationPointers[thisRoom.name]) {
                     if (Game.rooms[Memory.observationPointers[thisRoom.name][2]]) {
                         //Search observed room for power bank
-                        if (!Game.flags[thisRoom.name + "PowerGather"] && thisRoom.storage && (!thisRoom.storage.store[RESOURCE_POWER] || thisRoom.storage.store[RESOURCE_POWER] < 50000) && thisRoom.storage.store[RESOURCE_ENERGY] >= 100000) {
+                        /*if (!Game.flags[thisRoom.name + "PowerGather"] && thisRoom.storage && (!thisRoom.storage.store[RESOURCE_POWER] || thisRoom.storage.store[RESOURCE_POWER] < 50000) && thisRoom.storage.store[RESOURCE_ENERGY] >= 100000) {
                             let powerbanks = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_STRUCTURES, {
                             filter: (eStruct) => (eStruct.structureType == STRUCTURE_POWER_BANK && eStruct.ticksToDecay >= 4500)
                             });
@@ -981,7 +981,7 @@ module.exports.loop = function() {
                             if (!powerbanks.length) {
                                 Game.flags[thisRoom.name + "PowerGather"].remove();
                             }                          
-                        }
+                        }*/
                         
 
                         //Search observed room for resource deposit
@@ -1042,14 +1042,14 @@ module.exports.loop = function() {
                     //Update pointer
                     let xPointer = Memory.observationPointers[thisRoom.name][0]
                     let yPointer = Memory.observationPointers[thisRoom.name][1]
-                    if (xPointer >= 3) {
-                        if (yPointer >= 3) {
-                            yPointer = -3
+                    if (xPointer >= 5) {
+                        if (yPointer >= 5) {
+                            yPointer = -5
                         } else {
                             yPointer += 1;
                         }
 
-                        xPointer = -3;
+                        xPointer = -5;
                     } else {
                         xPointer += 1;
                     }
@@ -1062,7 +1062,7 @@ module.exports.loop = function() {
                 //Ideal - observe all rooms in a 3x3 square
                     //Ignore objects if room is controlled by someone else
                 if (!Memory.observationPointers[thisRoom.name]) {
-                    Memory.observationPointers[thisRoom.name] = [-3, -3, getRoomAtOffset(-3, -3, thisRoom.name)]
+                    Memory.observationPointers[thisRoom.name] = [-5, -5, getRoomAtOffset(-5, -5, thisRoom.name)]
                 }
 
                 if (Game.time % 5 == 0 && Memory.observationPointers[thisRoom.name] && Memory.observerList[thisRoom.name].length >= 1) {
@@ -1215,7 +1215,7 @@ module.exports.loop = function() {
                     }
 
                     if (Memory.scoreTarget[thisRoom.name] && thisRoom.energyCapacityAvailable >= 1600 && thisRoom.storage && thisRoom.storage.store[RESOURCE_SCORE] && thisRoom.storage.store[RESOURCE_SCORE] >= 10000) {
-                        spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.scoreTarget[thisRoom.name], energyIndex, '', '');
+                        spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.scoreTarget[thisRoom.name], energyIndex, '', thisRoom.storage.store[RESOURCE_SCORE]);
                     }
 
                     if (Game.flags[thisRoom.name + "ScoreBlocker"] && thisRoom.energyCapacityAvailable >= 4100) {
