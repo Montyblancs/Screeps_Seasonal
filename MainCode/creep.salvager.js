@@ -121,6 +121,8 @@ var creep_salvager = {
                 });
             }
         }
+
+        evadeAttacker(creep, 4, true);
     }
 };
 
@@ -212,6 +214,33 @@ function findTarget(creep, amountWithdrawn) {
     }
 
     return undefined;
+}
+
+function evadeAttacker(creep, evadeRange, roadIgnore) {
+    let Foe = undefined;
+    let closeFoe = undefined;
+    let didRanged = false;
+
+    Foe = creep.pos.findInRange(FIND_HOSTILE_CREEPS, evadeRange, {
+        filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0))
+    });
+
+    if (Foe.length) {
+        if (Memory.FarRoomsUnderAttack.indexOf(creep.room.name) == -1) {
+            Memory.FarRoomsUnderAttack.push(creep.room.name);
+        }
+        creep.memory.evadingUntil = Game.time + 5;
+        closeFoe = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+            filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0))
+        });
+
+        creep.travelTo(closeFoe, {
+            ignoreRoads: roadIgnore,
+            range: 8
+        }, true);
+    } else if (creep.memory.evadingUntil && creep.memory.evadingUntil > Game.time) {
+        creep.travelTo(new RoomPosition(25, 25, creep.room.name));
+    }
 }
 
 module.exports = creep_salvager;

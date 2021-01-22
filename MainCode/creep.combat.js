@@ -11,6 +11,9 @@ var creep_combat = {
        	if (!creep.memory.waitingTimer) {
             creep.memory.waitingTimer = 0
         }
+        if (!creep.memory.moveBack) {
+        	creep.memory.moveBack = false;
+        }
 
         if (Memory.roomsUnderAttack.indexOf(creep.room.name) != -1) {
             //Move towards Foe, stop at rampart
@@ -77,11 +80,27 @@ var creep_combat = {
                 }
             } else if (closeFoe) {
                 var lookResult = creep.pos.lookFor(LOOK_STRUCTURES);
-                let timer = 5000;
+                let timer = 1000;
                 if (Foe.length <= 1) {
                 	timer = 250;
                 }
-                if (lookResult.length && creep.memory.waitingTimer < timer) {
+                if (creep.memory.waitingTimer >= timer) {
+                	creep.memory.waitingTimer = 0;
+                	creep.memory.moveBack = true;
+                }
+
+                if (creep.memory.moveBack) {
+                	let homeSpawn = Game.getObjectById(creep.memory.fromSpawn)
+		            if (homeSpawn) {
+		                creep.travelTo(homeSpawn, {
+		                    maxRooms: 1,
+		                    range: 2
+		                });
+		                if(creep.pos.inRangeTo(homeSpawn, 2)) {
+					    	creep.memory.moveBack = false;
+						}
+		            }
+		        } else if (lookResult.length && creep.memory.waitingTimer < timer) {
                     for (let y = 0; y < lookResult.length; y++) {
                         if (lookResult[y].structureType == STRUCTURE_RAMPART) {
                             rFound = true;
