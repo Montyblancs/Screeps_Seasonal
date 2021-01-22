@@ -972,7 +972,7 @@ module.exports.loop = function() {
                 if (Memory.postObserveTick && Memory.observationPointers[thisRoom.name]) {
                     if (Game.rooms[Memory.observationPointers[thisRoom.name][2]]) {
                         //Search observed room for power bank
-                        /*if (!Game.flags[thisRoom.name + "PowerGather"] && thisRoom.storage && (!thisRoom.storage.store[RESOURCE_POWER] || thisRoom.storage.store[RESOURCE_POWER] < 50000) && thisRoom.storage.store[RESOURCE_ENERGY] >= 100000) {
+                        if (!Game.flags[thisRoom.name + "PowerGather"] && thisRoom.storage && (!thisRoom.storage.store[RESOURCE_POWER] || thisRoom.storage.store[RESOURCE_POWER] < 50000) && thisRoom.storage.store[RESOURCE_ENERGY] >= 400000) {
                             let powerbanks = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_STRUCTURES, {
                             filter: (eStruct) => (eStruct.structureType == STRUCTURE_POWER_BANK && eStruct.ticksToDecay >= 4500)
                             });
@@ -987,7 +987,7 @@ module.exports.loop = function() {
                             if (!powerbanks.length) {
                                 Game.flags[thisRoom.name + "PowerGather"].remove();
                             }                          
-                        }*/
+                        }
                         
 
                         //Search observed room for resource deposit

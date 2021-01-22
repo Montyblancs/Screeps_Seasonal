@@ -527,7 +527,7 @@ function getRunnerBuild(energyCap) {
         thisConfig.push(CARRY);
         thisConfig.push(MOVE);
         energyCap = energyCap - ConfigCost;
-        if (thisConfig.length >= 48) {
+        if (thisConfig.length >= 46) {
             break;
         }
     }

@@ -22,7 +22,7 @@ var spawn_BuildCreeps5 = {
         let minerMax = 2;
         let muleMax = 1;
         let upgraderMax = 2;
-        let repairMax = 1;
+        let repairMax = 2;
         let upSupplierMax = 1;
         if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] < 50000) {
             upSupplierMax = 0;
