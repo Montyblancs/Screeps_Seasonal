@@ -77,7 +77,7 @@ var creep_combat = {
                 }
             } else if (closeFoe) {
                 var lookResult = creep.pos.lookFor(LOOK_STRUCTURES);
-                let timer = 2000;
+                let timer = 5000;
                 if (Foe.length <= 1) {
                 	timer = 250;
                 }
@@ -244,10 +244,24 @@ function moveWithinRamparts(targetDir, creep, closeFoe) {
             for (let y = 0; y < lookResult.length; y++) {
                 if (lookResult[y].structureType == STRUCTURE_RAMPART) {
                     rFound = true;
-                    break;
+                } else if (lookResult[y].structureType != STRUCTURE_ROAD && lookResult[y].structureType != STRUCTURE_CONTAINER) {
+                	rFound = false;
+                	break;
                 }
             }
         }
+
+        if (rFound) {
+        	let creepLookResult = thisPos.lookFor(LOOK_CREEPS);
+	        if (creepLookResult.length) {
+	        	for (let c = 0; c < creepLookResult.length; c++) {
+	        		if (creepLookResult[c].owner == 'Montblanc' && creepLookResult[c].memory.priority == 'defender') {
+	        			rFound = false;
+	        		}
+	        	}
+	        }
+        }
+        
         if (!rFound) {
         	badDir.push(i);
         	continue;

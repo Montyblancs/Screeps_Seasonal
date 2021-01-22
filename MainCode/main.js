@@ -475,6 +475,12 @@ module.exports.loop = function() {
                     if (thisRoom.storage.store[RESOURCE_SCORE]) {
                        Game.map.visual.text("\u{1F3AE}" + formatNumber(Math.round(thisRoom.storage.store[RESOURCE_SCORE])), new RoomPosition(49, 1, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' }) 
                     }
+                    if (Memory.repairTarget[thisRoom.name]) {
+                    	let damagedStructure = Game.getObjectById(Memory.repairTarget[thisRoom.name]);
+            			if (damagedStructure && damagedStructure.structureType != STRUCTURE_CONTAINER) {
+            				Game.map.visual.text("\u{1F6E1}" + formatNumber(Math.round(damagedStructure.hits)), new RoomPosition(1, 49, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' })           				
+            			}
+                    }
                 }
 
                 //Get list of Links
@@ -495,7 +501,7 @@ module.exports.loop = function() {
                         while (roomLinks[linkCounter]) {
                             //Determine what link is before it's placed.
                             //Miner link = 0, upgrader link = 1, Miner link 2 = 2, StorageLink = 3
-                            var nearSources = roomLinks[linkCounter].pos.findInRange(FIND_SOURCES, 3);
+                            var nearSources = roomLinks[linkCounter].pos.findInRange(FIND_SOURCES, 2);
                             if (nearSources.length) {
                                 //This is a miner link
                                 if (minerLink == -1) {
@@ -1210,7 +1216,7 @@ module.exports.loop = function() {
                         spawn_BuildInstruction.run(Game.spawns[i], 'powerGather', Game.flags[thisRoom.name + "PowerGather"].pos.roomName, energyIndex, '', '');
                     }
 
-                    if (Game.flags[thisRoom.name + "Loot"]) {
+                    if (Game.flags[thisRoom.name + "Loot"] && thisRoom.controller.level >= 6) {
                         spawn_BuildInstruction.run(Game.spawns[i], 'loot', Game.flags[thisRoom.name + "Loot"].pos.roomName, energyIndex, '', Game.spawns[i].room.name);
                     }
 

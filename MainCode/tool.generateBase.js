@@ -689,9 +689,11 @@ var tool_generateBase = {
 					} else {
 						//Road/Rampart
 						if (terrain.get(thisCursor[0] + x, thisCursor[1] + y) != TERRAIN_MASK_WALL) {
-							if (thisRoom.controller.level >= 4) {
-								thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD)
+							if (thisRoom.controller.level >= 4) {								
 								thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART)
+							}
+							if (thisRoom.controller.level >= 5) {
+								thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD)
 							}
 						}
 					}

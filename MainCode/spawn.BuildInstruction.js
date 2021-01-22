@@ -448,10 +448,7 @@ var spawn_BuildInstruction = {
                     runnerMax = 3;
                 }
                 if (runners.length < runnerMax) {
-                    let mConfig = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL];
-                    if (spawn.room.energyCapacityAvailable >= 2900) {
-                        mConfig = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,HEAL,HEAL];
-                    }
+                    let mConfig = getRunnerBuild(spawn.room.energyCapacityAvailable);
                     let configCost = calculateConfigCost(mConfig);
                     if (configCost <= Memory.CurrentRoomEnergy[energyIndex]) {
                         Memory.CurrentRoomEnergy[energyIndex] = Memory.CurrentRoomEnergy[energyIndex] - configCost;
@@ -501,9 +498,9 @@ function calculateConfigCost(bodyConfig) {
 }
 
 function getLooterBuild(energyCap) {
-    var thisConfig = [];
+    let thisConfig = [];
 
-    var ConfigCost = BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+    let ConfigCost = BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
 
     while ((energyCap / ConfigCost) >= 1) {
         thisConfig.push(CARRY);
@@ -513,6 +510,28 @@ function getLooterBuild(energyCap) {
             break;
         }
     }
+    //thisConfig.sort();
+    return thisConfig;
+}
+
+function getRunnerBuild(energyCap) {
+	let thisConfig = [];
+
+	//factor out the cost for heal parts
+	energyCap = energyCap - (BODYPART_COST[HEAL] * 2);
+
+    let ConfigCost = BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
+
+    while ((energyCap / ConfigCost) >= 1) {
+        thisConfig.push(CARRY);
+        thisConfig.push(MOVE);
+        energyCap = energyCap - ConfigCost;
+        if (thisConfig.length >= 48) {
+            break;
+        }
+    }
+    thisConfig.push(HEAL);
+    thisConfig.push(HEAL);
     //thisConfig.sort();
     return thisConfig;
 }

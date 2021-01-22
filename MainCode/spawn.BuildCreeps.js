@@ -41,6 +41,13 @@ var spawn_BuildCreeps = {
 
         //For Level 4
         if (thisRoom.storage) {
+        	if (thisRoom.storage.store[RESOURCE_ENERGY] <= 1000) {
+        		builderMax = 1;
+        		repairMax = 1;
+        		upgraderMax = 1;
+        	} else {
+        		repairMax = 4;
+        	}
             scraperMax = 1;
             supplierMax++;
             if (thisRoom.storage.store[RESOURCE_ENERGY] >= 10000) {
