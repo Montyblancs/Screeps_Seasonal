@@ -519,6 +519,7 @@ function getRunnerBuild(energyCap) {
 
 	//factor out the cost for heal parts
 	energyCap = energyCap - (BODYPART_COST[HEAL] * 2);
+    energyCap = energyCap - (BODYPART_COST[MOVE] * 2);
 
     let ConfigCost = BODYPART_COST[CARRY] + BODYPART_COST[MOVE];
 
@@ -530,8 +531,7 @@ function getRunnerBuild(energyCap) {
             break;
         }
     }
-    thisConfig.push(HEAL);
-    thisConfig.push(HEAL);
+    thisConfig.push(MOVE, MOVE, HEAL, HEAL);
     //thisConfig.sort();
     return thisConfig;
 }
