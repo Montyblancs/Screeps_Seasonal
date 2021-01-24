@@ -3,6 +3,10 @@ var creep_scoreRunner = {
     /** @param {Creep} creep **/
     run: function(creep) {
         if (creep.room.name != creep.memory.homeRoom && creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
+        	if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
+                //Don't waste time
+                creep.suicide();
+            }
             if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
                 creep.travelTo(Game.rooms[creep.memory.homeRoom].storage, {
                     preferHighway: true

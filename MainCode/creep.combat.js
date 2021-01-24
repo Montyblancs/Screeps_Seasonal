@@ -80,7 +80,7 @@ var creep_combat = {
                 }
             } else if (closeFoe) {
                 var lookResult = creep.pos.lookFor(LOOK_STRUCTURES);
-                let timer = 1000;
+                let timer = 500;
                 if (Foe.length <= 1) {
                 	timer = 250;
                 }

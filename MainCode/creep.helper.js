@@ -46,7 +46,9 @@ var creep_Helper = {
                 creep.travelTo(new RoomPosition(25, 25, creep.memory.path[0]));
                 //creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
             } else {
-                creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
+                creep.travelTo(new RoomPosition(25, 25, creep.memory.destination), {
+                	preferHighway: true
+                });
             }
 
             if (creep.room.controller && !creep.room.controller.my) {

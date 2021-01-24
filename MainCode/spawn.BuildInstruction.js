@@ -444,7 +444,7 @@ var spawn_BuildInstruction = {
             case 'scoreRunner':
                 var runners = _.filter(Game.creeps, (creep) => (creep.memory.priority == 'scoreRunner' && creep.memory.homeRoom == spawn.room.name));
                 let runnerMax = 1;
-                if (params2 >= 30000) {
+                if (params2 >= 10000) {
                     runnerMax = 3;
                 }
                 if (runners.length < runnerMax) {

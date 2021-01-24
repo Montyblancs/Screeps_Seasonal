@@ -236,7 +236,8 @@ function evadeAttacker(creep, evadeRange, roadIgnore) {
 
         creep.travelTo(closeFoe, {
             ignoreRoads: roadIgnore,
-            range: 8
+            range: 8,
+            ignoreCreeps: false
         }, true);
     } else if (creep.memory.evadingUntil && creep.memory.evadingUntil > Game.time) {
         creep.travelTo(new RoomPosition(25, 25, creep.room.name));

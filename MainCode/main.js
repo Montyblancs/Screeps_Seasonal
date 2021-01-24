@@ -1220,7 +1220,7 @@ module.exports.loop = function() {
                         spawn_BuildInstruction.run(Game.spawns[i], 'loot', Game.flags[thisRoom.name + "Loot"].pos.roomName, energyIndex, '', Game.spawns[i].room.name);
                     }
 
-                    if (Memory.scoreTarget[thisRoom.name] && thisRoom.energyCapacityAvailable >= 1600 && thisRoom.storage && thisRoom.storage.store[RESOURCE_SCORE] && thisRoom.storage.store[RESOURCE_SCORE] >= 10000) {
+                    if (Memory.scoreTarget[thisRoom.name] && thisRoom.storage && thisRoom.storage.store[RESOURCE_SCORE] && thisRoom.storage.store[RESOURCE_SCORE] >= 3000) {
                         spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.scoreTarget[thisRoom.name], energyIndex, '', thisRoom.storage.store[RESOURCE_SCORE]);
                     }
 
@@ -1875,6 +1875,19 @@ function memCheck() {
     Memory.scoreTarget["W11S4"] = "W10S20"
     Memory.scoreTarget["W9S16"] = "W10S20"
     Memory.scoreTarget["W6S18"] = "W10S20"
+    Memory.scoreTarget["W11S19"] = "W10S20"
+
+    //bestDirection
+    //bestCenterCoords
+    if (!Memory.genBestDirection) { 
+        Memory.genBestDirection = new Object();
+    }
+    if (!Memory.genBestCenterCoords) {
+        Memory.genBestCenterCoords = new Object();
+    }
+    if (!Memory.genBestSourceID) {
+        Memory.genBestSourceID = new Object();
+    }
 
     if (!Memory.observerList) {
         Memory.observerList = new Object();
