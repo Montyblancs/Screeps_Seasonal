@@ -787,7 +787,7 @@ var tool_generateBase = {
 	        		switch (moveStep) {
 	        			case 1:
 	        				//Top
-	        				xOff += 1
+	        				xOff += 1;
 	        				if (xOff > loopDim) {
 	        					moveStep = 2;
 	        					xOff = loopDim;
@@ -796,16 +796,16 @@ var tool_generateBase = {
 	        				break;
 	        			case 2:
 	        				//Right
-	        				yOff += 1
+	        				yOff += 1;
 	        				if (yOff > loopDim) {
 	        					moveStep = 3;
 	        					xOff = loopDim;
-	        					yOff = loopDim * -1
+	        					yOff = loopDim * -1;
 	        				}
 	        				break;
 	        			case 3:
 	        				//Left
-	        				yOff += 1
+	        				yOff += 1;
 	        				if (yOff > loopDim) {
 	        					moveStep = 4;
 	        					xOff = loopDim * - 1;
@@ -814,10 +814,10 @@ var tool_generateBase = {
 	        				break;
 	        			case 4:
 	        				//Bottom
-	        				xOff += 1
+	        				xOff += 1;
 	        				if (xOff > loopDim) {
 	        					loopDim += 1;
-	        					moveStep 1;
+	        					moveStep = 1;
 	        					xOff = loopDim * - 1;
 	        					yOff = loopDim * - 1;
 	        				}
