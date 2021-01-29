@@ -249,21 +249,6 @@ var tool_generateBase = {
 
 			//Keep a record of extension sites created from below loop
 			let totalExtensions = 0
-	        //Count existing build extensions 
-	        let builtExtensions = thisRoom.find(FIND_MY_STRUCTURES, {
-	        	filter: { structureType: STRUCTURE_EXTENSION }
-	        });
-	        if (builtExtensions.length) {
-	        	totalExtensions += builtExtensions.length
-	        }
-
-	        //Count extension construction sites
-	        let siteExtensions = thisRoom.find(FIND_MY_CONSTRUCTION_SITES, {
-	        	filter: { structureType: STRUCTURE_EXTENSION }
-	        });
-	        if (siteExtensions.length) {
-	        	totalExtensions += siteExtensions.length
-	        }
 
 			for (let y = 0; y <= 10; y++) {
 				let isSpecialRow = false;
@@ -284,6 +269,9 @@ var tool_generateBase = {
 												break;
 											case 3:
 												//Nothing
+												if (!Game.flags[thisRoom.name + "storageMiner"]) {
+													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+												}
 												break;
 											case 7:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)
@@ -349,6 +337,9 @@ var tool_generateBase = {
 										switch(bestDirection) {
 											case 1:
 												//Nothing
+												if (!Game.flags[thisRoom.name + "storageMiner"]) {
+													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+												}
 												break;
 											case 3:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
@@ -490,6 +481,9 @@ var tool_generateBase = {
 									case 5:
 										//Dead middle
 										thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART)
+										if (!Game.flags[thisRoom.name + "Supply"]) {
+											thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "Supply"]);
+										}
 										break;
 									case 6:
 										switch(bestDirection) {
@@ -630,6 +624,9 @@ var tool_generateBase = {
 												break;
 											case 9:
 												//Nothing
+												if (!Game.flags[thisRoom.name + "storageMiner"]) {
+													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+												}
 												break;
 										}						
 										break;
@@ -695,6 +692,9 @@ var tool_generateBase = {
 												break;
 											case 7:
 												//Nothing
+												if (!Game.flags[thisRoom.name + "storageMiner"]) {
+													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+												}
 												break;
 											case 9:
 												if (thisRoom.controller.level >= 6) {
@@ -712,9 +712,8 @@ var tool_generateBase = {
 							if (determineConnection(thisCursor[0] + x, thisCursor[1] + y, bestCenterCoords[0], bestCenterCoords[1], terrain)) {
 								let roomPos = new RoomPosition(thisCursor[0] + x, thisCursor[1] + y, thisRoom.name)
 								if (!roomPos.inRangeTo(thisRoom.controller, 2) && !roomPos.inRangeTo(notMainSource, 2)) {
-									if (thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_EXTENSION) == OK) {
-										totalExtensions += 1
-									}
+									thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_EXTENSION)
+									totalExtensions += 1
 								}						
 								if (thisRoom.controller.level >= 4) {
 									thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART)
@@ -751,36 +750,29 @@ var tool_generateBase = {
 
 	        	//base corner is always rampart, always start with rampart
 
-	        	//If site response is ERR_FULL, cancel this loop immediately.
+	        	//This should loop until all extentions are accounted for - search each location for an extention structure while looping.
+	        		//This will build ramparts & roads where needed.
 	        	while (totalExtensions < targetExtensions) {
 	        		if (determineConnection(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, bestCenterCoords[0], bestCenterCoords[1], terrain)) {
-	        			if (flipFlop) {
-							let roomPos = new RoomPosition(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, thisRoom.name)
-							if (!roomPos.inRangeTo(thisRoom.controller, 2) && !roomPos.inRangeTo(notMainSource, 2)) {
-								let siteResult = thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_EXTENSION)
-								if (siteResult == OK) {
+	        			if (terrain.get(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff) != TERRAIN_MASK_WALL) {
+		        			if (flipFlop) {
+								let roomPos = new RoomPosition(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, thisRoom.name)
+								if (!roomPos.inRangeTo(thisRoom.controller, 2) && !roomPos.inRangeTo(notMainSource, 2)) {
+									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_EXTENSION)
 									totalExtensions += 1
-								} else if (siteResult == ERR_FULL || siteResult == ERR_RCL_NOT_ENOUGH) {
-									break;
+								}	
+								if (thisRoom.controller.level >= 4) {
+									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_RAMPART)
 								}
-							}	
-							if (thisRoom.controller.level >= 4) {
-								if (thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART) == ERR_FULL) {
-									break;
+		        			} else {
+		        				if (thisRoom.controller.level >= 4) {								
+									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_RAMPART)
 								}
-							}
-	        			} else {
-	        				if (thisRoom.controller.level >= 4) {								
-								if (thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART) == ERR_FULL) {
-									break;
+								if (thisRoom.controller.level >= 5) {
+									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_ROAD)
 								}
-							}
-							if (thisRoom.controller.level >= 5) {
-								if (thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD) == ERR_FULL) {
-									break;
-								}
-							}
-	        			}
+		        			}
+		        		}
 	        		}
 	        		flipFlop = !flipFlop;
 	        		//Increment pointers
@@ -792,6 +784,7 @@ var tool_generateBase = {
 	        					moveStep = 2;
 	        					xOff = loopDim;
 	        					yOff = loopDim * -1;
+	        					flipFlop = false;
 	        				}
 	        				break;
 	        			case 2:
@@ -799,8 +792,9 @@ var tool_generateBase = {
 	        				yOff += 1;
 	        				if (yOff > loopDim) {
 	        					moveStep = 3;
-	        					xOff = loopDim;
+	        					xOff = loopDim * -1;
 	        					yOff = loopDim * -1;
+	        					flipFlop = false;
 	        				}
 	        				break;
 	        			case 3:
@@ -810,6 +804,7 @@ var tool_generateBase = {
 	        					moveStep = 4;
 	        					xOff = loopDim * - 1;
 	        					yOff = loopDim;
+	        					flipFlop = false;
 	        				}
 	        				break;
 	        			case 4:
@@ -820,11 +815,94 @@ var tool_generateBase = {
 	        					moveStep = 1;
 	        					xOff = loopDim * - 1;
 	        					yOff = loopDim * - 1;
+	        					flipFlop = false;
 	        				}
 	        				break;
 	        		}
 	        	}
 	        }
+
+	        //Step 4 - Generate Links
+
+	        //Piggyback on a harvester's natural pathfinding to place upgradeMiner flag
+	        if (!Game.flags[thisRoom.name + "upgradeMiner"]) {
+				let harvesters = notMainSource.pos.findInRange(FIND_MY_CREEPS, 1, {
+	                filter: (thisCreep) => (thisCreep.memory.priority == 'harvester' && thisCreep.memory.sourceLocation == notMainSource.id)
+	            });
+		        if (harvesters.length) {
+		        	thisRoom.createFlag(harvesters[0].pos, thisRoom.name + "upgradeMiner");
+		        }
+	        }
+
+	        //Find free spot(s) for upgrade miner links and upgrader link
+	        if (Game.flags[thisRoom.name + "upgradeMiner"] && thisRoom.controller.level >= 5) {
+	        	let linkOffsetX = -1
+	        	let linkOffsetY = -1
+	        	let linkCursor = [Game.flags[thisRoom.name + "upgradeMiner"].pos.x, Game.flags[thisRoom.name + "upgradeMiner"].pos.y]
+	        	let placedLinks = 0
+	        	let linkCap = 1
+	        	if (thisRoom.controller.level >= 7) {
+	        		linkCap = 2
+	        	}
+	        	//Miner loop
+	        	while(placedLinks < linkCap) {
+	        		if (linkOffsetX == 0 && linkOffsetY == 0) {
+	        			linkOffsetX += 1
+	        		}
+
+	        		if (terrain.get(linkCursor[0] + linkOffsetX, linkCursor[1] + linkOffsetY) != TERRAIN_MASK_WALL) {
+	        			thisRoom.createConstructionSite(linkCursor[0] + linkOffsetX, linkCursor[1] + linkOffsetY, STRUCTURE_LINK)
+	        			placedLinks += 1 
+	        		} else {
+	        			linkOffsetX += 1
+	        			if (linkOffsetX >= 2) {
+	        				linkOffsetX = -1;
+	        				linkOffsetY += 1
+	        			}
+
+	        			if (linkOffsetY >= 2) {
+	        				//Couldn't find space
+	        				placedLinks = 99
+	        			}
+	        		}
+	        	}
+	        	placedLinks = 0;
+
+	        	//Upgrader loop
+	        	linkCap = 1
+	        	linkOffsetX = -2;
+	        	linkOffsetY = -2;
+	        	linkCursor = [thisRoom.controller.pos.x, thisRoom.controller.pos.y]
+	        	while(placedLinks < linkCap) {
+	        		if (terrain.get(linkCursor[0] + linkOffsetX, linkCursor[1] + linkOffsetY) != TERRAIN_MASK_WALL) {
+	        			thisRoom.createConstructionSite(linkCursor[0] + linkOffsetX, linkCursor[1] + linkOffsetY, STRUCTURE_LINK)
+	        			placedLinks += 1
+	        		} else {
+	        			switch(linkOffsetY) {
+	        				case -2:
+	        				case 2:
+	        					linkOffsetX += 1;
+	        					break;
+	        				default:
+	        					if (linkOffsetX == 2) {
+	        						linkOffsetX = 3
+	        					} else {
+	        						linkOffsetX = 2;
+	        					}	        					
+	        					break;
+	        			}
+	        			if (linkOffsetX > 2) {
+	        				linkOffsetY += 1
+	        			}
+	        			
+	        			if (linkOffsetY > 2) {
+	        				//Couldn't find space
+	        				placedLinks = 99
+	        			}
+	        		}
+	        	}
+
+	        }	        
         }
     }
 };

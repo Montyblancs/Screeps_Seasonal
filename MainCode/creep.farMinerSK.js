@@ -32,12 +32,12 @@ var creep_farMinerSK = {
                     filter: (mCreep) => ((mCreep.memory.priority == 'farMiner' || mCreep.memory.priority == 'farMinerNearDeath') && mCreep.memory.jobSpecific == 'SKMiner' && mCreep.id != creep.id)
                 })
                 if (!farMiners.length) {
-                    if (Game.flags[thisRoom.name + "FarMining"] && Game.flags[thisRoom.name + "FarMining"].pos.roomName == creep.pos.roomName) {
+                    if (Game.flags[creep.room.name + "FarMining"] && Game.flags[creep.room.name + "FarMining"].pos.roomName == creep.pos.roomName) {
                         //creep.room.createFlag(Game.flags[thisRoom.name + "FarMining"].pos, thisRoom.name + "FarMining" + ";" + targetTime.toString());
                         //Game.flags[thisRoom.name + "FarMining"].remove();
                     }
                     for (i = 2; i < 10; i++) {
-                        if (Game.flags[thisRoom.name + "FarMining" + i.toString()] && Game.flags[thisRoom.name + "FarMining" + i.toString()].pos.roomName == creep.pos.roomName) {
+                        if (Game.flags[creep.room.name + "FarMining" + i.toString()] && Game.flags[creep.room.name + "FarMining" + i.toString()].pos.roomName == creep.pos.roomName) {
                             //creep.room.createFlag(Game.flags[thisRoom.name + "FarMining" + i.toString()].pos, thisRoom.name + "FarMining" + i.toString() + ";" + targetTime.toString());
                             //Game.flags[thisRoom.name + "FarMining" + i.toString()].remove();
                         }

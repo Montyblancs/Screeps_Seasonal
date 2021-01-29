@@ -1071,7 +1071,7 @@ module.exports.loop = function() {
                     Memory.observationPointers[thisRoom.name] = [-5, -5, getRoomAtOffset(-5, -5, thisRoom.name)]
                 }
 
-                if (Game.time % 5 == 0 && Memory.observationPointers[thisRoom.name] && Memory.observerList[thisRoom.name].length >= 1) {
+                if (Game.time % 2 == 0 && Memory.observationPointers[thisRoom.name] && Memory.observerList[thisRoom.name].length >= 1) {
                     var thisObserver = Game.getObjectById(Memory.observerList[thisRoom.name][0]);
                     if (thisObserver) {
                         thisObserver.observeRoom(Memory.observationPointers[thisRoom.name][2]);
