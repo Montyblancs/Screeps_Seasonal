@@ -84,18 +84,23 @@ let creep_farMule = {
                 } else if (creep.memory.containerTarget) {
                 	//Check for score containers
                 	let foundScore = false;
-                	if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && (!Game.rooms[creep.memory.homeRoom].storage.store[RESOURCE_SCORE] || Game.rooms[creep.memory.homeRoom].storage.store[RESOURCE_SCORE] < 300000)) {
-                		let scoreContainer = creep.pos.findClosestByRange(FIND_SCORE_CONTAINERS, {
-		                	filter: (thisScore) => (_.sum(thisScore.store) > 0)
-		            	});
-		            	if (scoreContainer && creep.withdraw(scoreContainer, Object.keys(scoreContainer.store)[0]) == ERR_NOT_IN_RANGE) {
-		            		creep.travelTo(scoreContainer, {
-		            			ignoreRoads: roadIgnore,
-		            			maxRooms: 1
-		            		})
-		            		foundScore = true;
-		            	}   	
-                	}
+
+            		let scoreContainer = creep.pos.findClosestByRange(FIND_SYMBOL_CONTAINERS, {
+	                	filter: (thisScore) => (_.sum(thisScore.store) > 0)
+	            	});
+                    if (scoreContainer) {
+                        //Check resource type & determine if room is overloaded
+                        //scoreContainer.resourceType
+                        if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && (!Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] || Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] < 30000)) {
+                            if (scoreContainer && creep.withdraw(scoreContainer, Object.keys(scoreContainer.store)[0]) == ERR_NOT_IN_RANGE) {
+                                creep.travelTo(scoreContainer, {
+                                    ignoreRoads: roadIgnore,
+                                    maxRooms: 1
+                                })
+                                foundScore = true;
+                            }   
+                        }
+                    }	            		
 
                     let foundDrop = false;
                     if (Game.flags[creep.room.name + "SKRoom"] && !foundScore) {

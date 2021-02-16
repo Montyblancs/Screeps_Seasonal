@@ -715,7 +715,7 @@ var tool_generateBase = {
 									thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_EXTENSION)
 									totalExtensions += 1
 								}						
-								if (thisRoom.controller.level >= 4) {
+								if (thisRoom.controller.level >= 7) {
 									thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART)
 								}
 							}								
@@ -724,7 +724,7 @@ var tool_generateBase = {
 						//Road/Rampart
 						if (terrain.get(thisCursor[0] + x, thisCursor[1] + y) != TERRAIN_MASK_WALL) {
 							if (determineConnection(thisCursor[0] + x, thisCursor[1] + y, bestCenterCoords[0], bestCenterCoords[1], terrain)) {
-								if (thisRoom.controller.level >= 4) {								
+								if (thisRoom.controller.level >= 7) {								
 									thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART)
 								}
 								if (thisRoom.controller.level >= 5) {
@@ -761,11 +761,11 @@ var tool_generateBase = {
 									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_EXTENSION)
 									totalExtensions += 1
 								}	
-								if (thisRoom.controller.level >= 4) {
+								if (thisRoom.controller.level >= 7) {
 									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_RAMPART)
 								}
 		        			} else {
-		        				if (thisRoom.controller.level >= 4) {								
+		        				if (thisRoom.controller.level >= 7) {								
 									thisRoom.createConstructionSite(bestCenterCoords[0] + xOff, bestCenterCoords[1] + yOff, STRUCTURE_RAMPART)
 								}
 								if (thisRoom.controller.level >= 5) {

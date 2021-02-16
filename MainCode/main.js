@@ -34,7 +34,6 @@ var creep_farScout = require('creep.farScout');
 
 //Season
 var creep_scoreRunner = require('creep.scoreRunner');
-var creep_scoreBlocker = require('creep.scoreBlocker');
 
 //Spawning
 var spawn_BuildCreeps = require('spawn.BuildCreeps');
@@ -439,8 +438,6 @@ module.exports.loop = function() {
         Memory.mineralTotals[RESOURCE_CATALYZED_ZYNTHIUM_ALKALIDE] = 0;
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ACID] = 0;
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ALKALIDE] = 0;
-
-        Memory.mineralTotals[RESOURCE_SCORE] = 0;
     }
 
     for (const i in Game.spawns) {
@@ -472,9 +469,9 @@ module.exports.loop = function() {
                     if (thisRoom.storage.store[RESOURCE_POWER]) {
                        Game.map.visual.text("\u{2622}" + formatNumber(Math.round(thisRoom.storage.store[RESOURCE_POWER])), new RoomPosition(49, 49, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' }) 
                     }
-                    if (thisRoom.storage.store[RESOURCE_SCORE]) {
+                    /*if (thisRoom.storage.store[RESOURCE_SCORE]) {
                        Game.map.visual.text("\u{1F3AE}" + formatNumber(Math.round(thisRoom.storage.store[RESOURCE_SCORE])), new RoomPosition(49, 1, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' }) 
-                    }
+                    }*/
                     if (Memory.repairTarget[thisRoom.name]) {
                     	let damagedStructure = Game.getObjectById(Memory.repairTarget[thisRoom.name]);
             			if (damagedStructure && damagedStructure.structureType != STRUCTURE_CONTAINER) {
@@ -873,12 +870,12 @@ module.exports.loop = function() {
                         Memory.mineralTotals[roomMinerals[p]] += thisRoom.terminal.store[roomMinerals[p]]
                     }
 
-                    if (thisRoom.storage) {
+                    /*if (thisRoom.storage) {
                         let storedScore = thisRoom.storage.store[RESOURCE_SCORE];
                         if (storedScore) {
                             Memory.mineralTotals[RESOURCE_SCORE] += storedScore;
                         }
-                    }               
+                    }*/              
                 }
 
                 //Handle Links
@@ -972,7 +969,7 @@ module.exports.loop = function() {
                 if (Memory.postObserveTick && Memory.observationPointers[thisRoom.name]) {
                     if (Game.rooms[Memory.observationPointers[thisRoom.name][2]]) {
                         //Search observed room for power bank
-                        if (!Game.flags[thisRoom.name + "PowerGather"] && thisRoom.storage && (!thisRoom.storage.store[RESOURCE_POWER] || thisRoom.storage.store[RESOURCE_POWER] < 50000) && thisRoom.storage.store[RESOURCE_ENERGY] >= 400000) {
+                        /*if (!Game.flags[thisRoom.name + "PowerGather"] && thisRoom.storage && (!thisRoom.storage.store[RESOURCE_POWER] || thisRoom.storage.store[RESOURCE_POWER] < 50000) && thisRoom.storage.store[RESOURCE_ENERGY] >= 400000) {
                             let powerbanks = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_STRUCTURES, {
                             filter: (eStruct) => (eStruct.structureType == STRUCTURE_POWER_BANK && eStruct.ticksToDecay >= 4500)
                             });
@@ -987,7 +984,7 @@ module.exports.loop = function() {
                             if (!powerbanks.length) {
                                 Game.flags[thisRoom.name + "PowerGather"].remove();
                             }                          
-                        }
+                        }*/
                         
 
                         //Search observed room for resource deposit
@@ -1026,17 +1023,17 @@ module.exports.loop = function() {
                         if (!Game.flags[thisRoom.name + "Loot"] && thisRoom.name != Memory.observationPointers[thisRoom.name][2]) {
                             let roomRef = Game.rooms[Memory.observationPointers[thisRoom.name][2]]
                             if (!roomRef.controller || (!roomRef.controller.owner && (!roomRef.controller.reservation || roomRef.controller.reservation.username != 'Montblanc')) ) {
-                                let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SCORE_CONTAINERS, {
+                                let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SYMBOL_CONTAINERS, {
                                     filter: (thisScore) => (_.sum(thisScore.store) > 0)
                                 });
-                                if (scoreContainer.length) {
+                                if (scoreContainer.length && thisRoom.storage && (!thisRoom.storage.store[scoreContainer[0].resourceType] || thisRoom.storage.store[scoreContainer[0].resourceType] < 30000)) {
                                     Game.rooms[Memory.observationPointers[thisRoom.name][2]].createFlag(scoreContainer[0].pos.x, scoreContainer[0].pos.y, thisRoom.name + "Loot");
                                     console.log('Observed and created loot flag at ' + Memory.observationPointers[thisRoom.name][2])
                                 }
                             }             
                         } else if (Game.flags[thisRoom.name + "Loot"] && Game.flags[thisRoom.name + "Loot"].room && Game.flags[thisRoom.name + "Loot"].room.name == Memory.observationPointers[thisRoom.name][2])  {
                             //Determine if this is still lootable
-                            let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SCORE_CONTAINERS, {
+                            let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SYMBOL_CONTAINERS, {
                                 filter: (thisScore) => (_.sum(thisScore.store) > 0)
                             });
                             if (!scoreContainer.length) {
@@ -1220,13 +1217,9 @@ module.exports.loop = function() {
                         spawn_BuildInstruction.run(Game.spawns[i], 'loot', Game.flags[thisRoom.name + "Loot"].pos.roomName, energyIndex, '', Game.spawns[i].room.name);
                     }
 
-                    if (Memory.scoreTarget[thisRoom.name] && thisRoom.storage && thisRoom.storage.store[RESOURCE_SCORE] && thisRoom.storage.store[RESOURCE_SCORE] >= 3000) {
+                    /*if (Memory.scoreTarget[thisRoom.name] && thisRoom.storage && thisRoom.storage.store[RESOURCE_SCORE] && thisRoom.storage.store[RESOURCE_SCORE] >= 3000) {
                         spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.scoreTarget[thisRoom.name], energyIndex, '', thisRoom.storage.store[RESOURCE_SCORE]);
-                    }
-
-                    if (Game.flags[thisRoom.name + "ScoreBlocker"] && thisRoom.energyCapacityAvailable >= 4100) {
-                        spawn_BuildInstruction.run(Game.spawns[i], 'scoreBlocker', Game.flags[thisRoom.name + "ScoreBlocker"].pos.roomName, energyIndex, '', '')
-                    }
+                    }*/
 
                     if (Game.flags[thisRoom.name + "PowerCollect"]) {
                         //Mule capacity = 1650
@@ -1511,10 +1504,6 @@ module.exports.loop = function() {
                 case 'scoreRunner':
                     creep_scoreRunner.run(creep);
                     break;
-                case 'scoreBlocker':
-                case 'scoreBlockerNearDeath':
-                    creep_scoreBlocker.run(creep);
-                    break;
                 default:
                     if (!creep.memory.priority) {
                         creep.memory.priority = 'helper';
@@ -1656,7 +1645,7 @@ function DisplayBoostTotals() {
     }
 
     //Current score stored in storage
-    new RoomVisual().rect(6.5, 46, 6, 1, {
+    /*new RoomVisual().rect(6.5, 46, 6, 1, {
         fill: fillColor,
         stroke: '#FFFFFF',
         opacity: 0.15,
@@ -1668,7 +1657,7 @@ function DisplayBoostTotals() {
         color: '#FFFFFF',
         stroke: '#000000',
         strokeWidth: 0.15
-    });
+    });*/
 
 
     //Middle Box (Last Notification)
@@ -1866,18 +1855,6 @@ function memCheck() {
     }
     Memory.observationPointers = new Object();
 
-    Memory.scoreTarget = new Object();
-    Memory.scoreTarget["W21S11"] = "W20S10"
-    Memory.scoreTarget["W21S14"] = "W20S10"
-    Memory.scoreTarget["W17S13"] = "W20S10"
-    Memory.scoreTarget["W15S11"] = "W20S10"
-    Memory.scoreTarget["W12S12"] = "W10S20"
-    Memory.scoreTarget["W11S4"] = "W10S20"
-    Memory.scoreTarget["W9S16"] = "W10S20"
-    Memory.scoreTarget["W6S18"] = "W10S20"
-    Memory.scoreTarget["W11S19"] = "W10S20"
-    Memory.scoreTarget["W2S18"] = "W10S20"
-
     //bestDirection
     //bestCenterCoords
     if (!Memory.genBestDirection) { 
@@ -2013,8 +1990,6 @@ function memCheck() {
         Memory.mineralTotals[RESOURCE_CATALYZED_ZYNTHIUM_ALKALIDE] = 0;
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ACID] = 0;
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ALKALIDE] = 0;
-
-        Memory.mineralTotals[RESOURCE_SCORE] = 0;
     }
 }
 

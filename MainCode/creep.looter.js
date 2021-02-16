@@ -39,7 +39,7 @@ var creep_looter = {
 	                    filter: (thisRuin) => (thisRuin.store.getUsedCapacity() > 0)
 	                });
 
-	                let scoreContainer = creep.pos.findClosestByRange(FIND_SCORE_CONTAINERS, {
+	                let scoreContainer = creep.pos.findClosestByRange(FIND_SYMBOL_CONTAINERS, {
 	                	filter: (thisScore) => (_.sum(thisScore.store) > 0)
 	            	});
 
@@ -56,7 +56,7 @@ var creep_looter = {
 	                        });
 	                    }
 	                } else if (scoreContainer) {
-	                	if (creep.withdraw(scoreContainer, RESOURCE_SCORE) == ERR_NOT_IN_RANGE) {
+	                	if (creep.withdraw(scoreContainer, Object.keys(scoreContainer.store)[0]) == ERR_NOT_IN_RANGE) {
 	                        creep.travelTo(scoreContainer, {
 	                            maxRooms: 1
 	                        });

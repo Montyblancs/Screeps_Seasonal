@@ -22,7 +22,7 @@ var spawn_BuildCreeps5 = {
         let minerMax = 2;
         let muleMax = 1;
         let upgraderMax = 2;
-        let repairMax = 2;
+        let repairMax = 1;
         let upSupplierMax = 1;
         if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] < 50000) {
             upSupplierMax = 0;
@@ -388,7 +388,7 @@ var spawn_BuildCreeps5 = {
             }
             if (thisRoom.storage.store[RESOURCE_ENERGY] >= 375000) {
                 //speed up that repairing a bit
-                repairMax++;
+                upgraderMax++;
             }
             if (thisRoom.storage.store[RESOURCE_ENERGY] >= 525000) {
                 //HOW MUCH MUST I CRANK IT UP?

@@ -15,7 +15,7 @@ var spawn_BuildCreeps = {
         let harvesterMax = 2;
         let builderMax = 2;
         let upgraderMax = 6;
-        let repairMax = 2;
+        let repairMax = 1;
         let supplierMax = 0;
         let distributorMax = 1;
         let scraperMax = 0;
@@ -45,8 +45,6 @@ var spawn_BuildCreeps = {
         		builderMax = 1;
         		repairMax = 1;
         		upgraderMax = 1;
-        	} else {
-        		repairMax = 4;
         	}
             scraperMax = 1;
             supplierMax++;

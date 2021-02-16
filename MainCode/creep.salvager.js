@@ -153,16 +153,16 @@ function findTarget(creep, amountWithdrawn) {
     if ((_.sum(creep.carry) + amountWithdrawn) < creep.carryCapacity) {
     	//Find score drops
     	if (creep.memory.lastTargetId) {
-            returnObject = creep.pos.findClosestByRange(FIND_SCORE_CONTAINERS, {
+            returnObject = creep.pos.findClosestByRange(FIND_SYMBOL_CONTAINERS, {
                 filter: (thisScore) => (_.sum(thisScore.store) > 0 && thisScore.id != creep.memory.lastTargetId)
             });
         } else {
-            returnObject = creep.pos.findClosestByRange(FIND_SCORE_CONTAINERS, {
+            returnObject = creep.pos.findClosestByRange(FIND_SYMBOL_CONTAINERS, {
                 filter: (thisScore) => (_.sum(thisScore.store) > 0)
             });
         }
-        //Hard limit of 300k score in storage
-        if (returnObject && creep.room.storage && creep.room.storage.store[RESOURCE_SCORE] && creep.room.storage.store[RESOURCE_SCORE] >= 300000) {
+        //Hard limit of 30k score in storage
+        if (returnObject && creep.room.storage && creep.room.storage.store[returnObject.resourceType] && creep.room.storage.store[returnObject.resourceType] >= 30000) {
         	returnObject = undefined;
         }
         //Check tombstones
