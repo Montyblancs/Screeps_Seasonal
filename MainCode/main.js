@@ -1876,6 +1876,7 @@ function memCheck() {
     Memory.scoreTarget["W9S16"] = "W10S20"
     Memory.scoreTarget["W6S18"] = "W10S20"
     Memory.scoreTarget["W11S19"] = "W10S20"
+    Memory.scoreTarget["W2S18"] = "W10S20"
 
     //bestDirection
     //bestCenterCoords
