@@ -609,6 +609,14 @@ module.exports.loop = function() {
                     }
                 }
 
+                //Record this room's decoder
+                if (Game.time % 1000 == 0) {
+                    let roomDecoder = thisRoom.find(FIND_SYMBOL_DECODERS)
+                    if (roomDecoder && !Memory.decoderIndex[roomDecoder.resourceType]) {
+                        Memory.decoderIndex[roomDecoder.resourceType].push(thisRoom.name);
+                    }
+                }
+
                 //Get list of Minerals
                 //Verify that extractor is still alive (Can't put a rampart on it)
                 if (!Memory.mineralList[thisRoom.name] || (Game.time % 5000 == 0 && thisRoom.controller.level >= 6)) {
@@ -1734,6 +1742,10 @@ function recalculateBestWorker(thisEnergyCap) {
 }
 
 function memCheck() {
+    if (!Memory.decoderIndex) {
+        Memory.decoderIndex = new Object();
+    }
+
     if (!Memory.RoomsRun) {
         Memory.RoomsRun = [];
         console.log('RoomsRun Defaulted');

@@ -1,0 +1,5 @@
+Decoder nearest rooms - periodically loop through score keys and determine what active room is closest.
+
+Score runner - if terminal or storage is > 5000 for assigned key, spawn score runner
+
+Market - Send score resource to rooms that are assigned matching key

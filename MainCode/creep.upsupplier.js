@@ -6,13 +6,17 @@ var creep_upSupplier = {
             creep.memory.priority = 'upSupplierNearDeath';
         }
 
-        if (_.sum(creep.carry) == 0) {
+        if (creep.store.getUsedCapacity() == 0) {
             //Get from storage
             //Get power if available and powerSpawn is empty
-            var storageTarget = creep.room.storage;
+            let storageTarget = creep.room.storage;
             if (storageTarget) {
-                var getPower = false;
-                var powerAmount = 100;
+            	let moveScoreNeed = undefined;
+            	if (creep.room.terminal) {
+            		moveScoreNeed = determineScoreNeed(creep, storageTarget, creep.room.terminal);
+            	}
+                let getPower = false;
+                let powerAmount = 100;
                 if (Memory.powerSpawnList[creep.room.name].length && creep.room.storage.store[RESOURCE_POWER] > 0) {
                     var pSpawn = Game.getObjectById(Memory.powerSpawnList[creep.room.name][0]);
                     if (pSpawn && pSpawn.power == 0) {
@@ -22,7 +26,18 @@ var creep_upSupplier = {
                         }
                     }
                 }
-                if (getPower) {
+                if (moveScoreNeed) {
+                	//moveScoreNeed = resource key to grab from storage
+                	let withdrawResult = creep.withdraw(storageTarget, moveScoreNeed);
+                    if (withdrawResult == ERR_NOT_IN_RANGE) {
+                        creep.travelTo(storageTarget, {
+                            ignoreRoads: true,
+                            maxRooms: 1
+                        });
+                    } else if (withdrawResult == OK) {
+                        locateSupplierTarget("SCORE", creep);
+                    }
+                } else if (getPower) {
                     var withdrawResult = creep.withdraw(storageTarget, RESOURCE_POWER, powerAmount);
                     if (withdrawResult == ERR_NOT_IN_RANGE) {
                         creep.travelTo(storageTarget, {
@@ -48,7 +63,17 @@ var creep_upSupplier = {
                 }
             }
         } else {
-            if (creep.carry[RESOURCE_POWER] > 0) {
+        	if (creep.store[RESOURCE_ENERGY] == 0 && !creep.store[RESOURCE_POWER]) {
+        		//Carrying score, go to terminal
+        		if (creep.room.terminal) {
+        			let transferResult = creep.transfer(creep.room.terminal, Object.keys(creep.store)[0]);
+        			if (transferResult == ERR_NOT_IN_RANGE) {
+                        creep.travelTo(creep.room.terminal, {
+                            maxRooms: 1
+                        });
+                    }
+        		}
+        	} else if (creep.store[RESOURCE_POWER] > 0) {
                 //Drop off in power Spawn
                 var pSpawn = Game.getObjectById(Memory.powerSpawnList[creep.room.name][0]);
                 if (pSpawn) {
@@ -80,7 +105,13 @@ var creep_upSupplier = {
 };
 
 function locateSupplierTarget(targetType, creep) {
-    if (targetType == "POWER") {
+	if (targetType == "SCORE") {
+		if (creep.room.terminal) {
+			creep.travelTo(creep.room.terminal, {
+				maxRooms: 1
+			});
+		}
+	} else if (targetType == "POWER") {
         var pSpawn = Game.getObjectById(Memory.powerSpawnList[creep.room.name][0]);
         if (pSpawn) {
             creep.travelTo(pSpawn, {
@@ -100,7 +131,7 @@ function locateSupplierTarget(targetType, creep) {
 
 //Below functions are only fired when OK is returned
 function determineIfEmptyPower(thisSpawn, creep) {
-    if (_.sum(creep.carry) <= thisSpawn.powerCapacity - thisSpawn.power) {
+    if (creep.store.getUsedCapacity <= thisSpawn.powerCapacity - thisSpawn.power) {
         var storageTarget = creep.room.storage;
         if (storageTarget) {
             creep.travelTo(storageTarget, {
@@ -112,7 +143,7 @@ function determineIfEmptyPower(thisSpawn, creep) {
 }
 
 function determineIfEmptyEnergy(thisLink, creep) {
-    if (_.sum(creep.carry) <= thisLink.energyCapacity - thisLink.energy) {
+    if (creep.store.getUsedCapacity <= thisLink.energyCapacity - thisLink.energy) {
         var storageTarget = creep.room.storage;
         if (storageTarget) {
             creep.travelTo(storageTarget, {
@@ -121,6 +152,18 @@ function determineIfEmptyEnergy(thisLink, creep) {
             });
         }
     }
+}
+
+function determineScoreNeed(creep, storage, terminal) {
+	for (const key in storage.store) {
+		//Don't move score from storage if it's supposed to be here
+		if (SYMBOLS.indexOf(key) > -1 && (!Memory.decorderIndex[key] || (Memory.decoderIndex[key] && Memory.decoderIndex[key] != creep.room.name))) {
+			if (storage.store[key] >= 1000 && (!terminal.store[key] || terminal.store[key] < 5000)) {
+				return key;
+			}
+		}
+	}
+	return undefined;
 }
 
 module.exports = creep_upSupplier;
