@@ -39,57 +39,45 @@ var creep_scoreRunner = {
                     creep.suicide();
                 }
 
-                if (creep.room.storage && creep.room.storage.store[RESOURCE_SCORE]) {
-                    withdrawResult = creep.withdraw(creep.room.storage, RESOURCE_SCORE)
-                    if (withdrawResult == ERR_NOT_IN_RANGE) {
-                        creep.travelTo(creep.room.storage, {
-                            maxRooms: 1
-                        });
-                    } else if (withdrawResult == OK) {
-                        if (Memory.scoreTarget[creep.memory.homeRoom]) {
-                            creep.travelTo(new RoomPosition(25, 25, Memory.scoreTarget[creep.memory.homeRoom]));
-                    } else {
-                            creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
+                let withdrawResult = undefined;
+                if (creep.room.storage && creep.room.storage.store[creep.memory.resourceName]) {
+                    withdrawResult = creep.withdraw(creep.room.storage, creep.memory.resourceName)               
+                } else if (creep.room.terminal && creep.room.terminal.store[creep.memory.resourceName]) {
+                    withdrawResult = creep.withdraw(creep.room.terminal, creep.memory.resourceName)               
+                }
+
+                if (withdrawResult == ERR_NOT_IN_RANGE) {
+                    creep.travelTo(creep.room.storage, {
+                        maxRooms: 1
+                    });
+                } else if (withdrawResult == OK) {
+                    if (creep.memory.destination == creep.room.name) {
+                        //go right to decoder
+                        let roomDecoder = creep.pos.findClosestByRange(FIND_SYMBOL_DECODERS)
+                        if(roomDecoder) {
+                            creep.travelTo(roomDecoder, {
+                                maxRooms: 1
+                            })
                         }
+                    } else {
+                        creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
                     }
-                } else {
+                } else if (!withdrawResult) {
                     creep.suicide();
                 }
             } else {
                 //In target room, bank score.
-                let scoreCollector = creep.pos.findClosestByRange(FIND_SCORE_COLLECTORS);
-                let outerRange = 3
-                let doIgnore = false
-                if (scoreCollector && creep.transfer(scoreCollector, RESOURCE_SCORE) == ERR_NOT_IN_RANGE) {
-                	if (creep.pos.inRangeTo(scoreCollector, 4)) {
-                		outerRange = 1,
-                		doIgnore = true
-                	}
+                let scoreCollector = creep.pos.findClosestByRange(FIND_SYMBOL_DECODERS);
+                if (scoreCollector && creep.transfer(scoreCollector, creep.memory.resourceName) == ERR_NOT_IN_RANGE) {
                     creep.travelTo(scoreCollector, {
-                        maxRooms: 1,
-                        range: outerRange,
-                        ignoreCreeps: doIgnore
+                        maxRooms: 1
                     })
-                } 
-
-                if (creep.hits <= 800) {
-                    //Don't let runners get blown to bits over and over
-                    var hostiles = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3, {
-                        filter: (creep) => (creep.getActiveBodyparts(WORK) > 0 || creep.getActiveBodyparts(CARRY) > 0 || creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 || creep.getActiveBodyparts(HEAL) > 0 && !Memory.whiteList.includes(creep.owner.username))
-                    });
-                    if (hostiles.length > 0 && hostiles[0].owner.username != 'Invader' && hostiles[0].owner.username != 'Source Keeper') {
-                        Game.notify('ScoreTarget was removed due to an attack by ' + hostiles[0].owner.username);
-                        Memory.LastNotification = Game.time.toString() + ' : ' + creep.memory.targetFlag + ' was removed due to an attack by ' + hostiles[0].owner.username
-                        /*let targetTime = Game.time + 1500;
-                        creep.room.createFlag(Game.flags["ScoreTarget"].pos, "ScoreTarget;" + targetTime.toString());
-                        Game.flags["ScoreTarget"].remove();*/
-                    }
                 }
             }
         }
 
         creep.heal(creep);
-        evadeAttacker(creep, 5, true);
+        //evadeAttacker(creep, 5, true);
     }
 };
 

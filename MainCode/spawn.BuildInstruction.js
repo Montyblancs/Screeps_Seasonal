@@ -444,9 +444,6 @@ var spawn_BuildInstruction = {
             case 'scoreRunner':
                 var runners = _.filter(Game.creeps, (creep) => (creep.memory.priority == 'scoreRunner' && creep.memory.homeRoom == spawn.room.name));
                 let runnerMax = 1;
-                if (params2 >= 10000) {
-                    runnerMax = 3;
-                }
                 if (runners.length < runnerMax) {
                     let mConfig = getRunnerBuild(spawn.room.energyCapacityAvailable);
                     let configCost = calculateConfigCost(mConfig);
@@ -457,6 +454,7 @@ var spawn_BuildInstruction = {
                                 priority: 'scoreRunner',
                                 homeRoom: spawn.room.name,
                                 destination: params,
+                                resourceName: params2,
                                 deathWarn: _.size(mConfig) * 4
                             }
                         });

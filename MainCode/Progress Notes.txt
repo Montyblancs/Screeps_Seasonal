@@ -1,5 +1,4 @@
-Decoder nearest rooms - periodically loop through score keys and determine what active room is closest.
-
-Score runner - if terminal or storage is > 5000 for assigned key, spawn score runner
+decoderIndex = Where the decoder for the resource is
+decoderSource = Nearest controller room to this decoder
 
 Market - Send score resource to rooms that are assigned matching key

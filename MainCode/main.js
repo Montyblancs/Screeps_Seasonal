@@ -613,7 +613,7 @@ module.exports.loop = function() {
                 if (Game.time % 1000 == 0) {
                     let roomDecoder = thisRoom.find(FIND_SYMBOL_DECODERS)
                     if (roomDecoder && !Memory.decoderIndex[roomDecoder.resourceType]) {
-                        Memory.decoderIndex[roomDecoder.resourceType].push(thisRoom.name);
+                        Memory.decoderIndex[roomDecoder.resourceType] = thisRoom.name;
                     }
                 }
 
@@ -1225,9 +1225,15 @@ module.exports.loop = function() {
                         spawn_BuildInstruction.run(Game.spawns[i], 'loot', Game.flags[thisRoom.name + "Loot"].pos.roomName, energyIndex, '', Game.spawns[i].room.name);
                     }
 
-                    /*if (Memory.scoreTarget[thisRoom.name] && thisRoom.storage && thisRoom.storage.store[RESOURCE_SCORE] && thisRoom.storage.store[RESOURCE_SCORE] >= 3000) {
-                        spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.scoreTarget[thisRoom.name], energyIndex, '', thisRoom.storage.store[RESOURCE_SCORE]);
-                    }*/
+                    //Determine scorerunner need
+                    for (const decoderKey2 in Memory.decoderIndex) {
+                        if (Memory.decoderSource[decoderKey2] && Memory.decoderSource[decoderKey2] == thisRoom.name) {
+                            if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= 5000) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= 5000)) {
+                                spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
+                                break;
+                            }
+                        }
+                    }
 
                     if (Game.flags[thisRoom.name + "PowerCollect"]) {
                         //Mule capacity = 1650
@@ -1276,6 +1282,29 @@ module.exports.loop = function() {
             Memory.RoomsRun.push(thisRoom.name);
         }
 
+    }
+
+    //Determine which active room is closest to a respective decoder
+    if (Game.time % 1000 == 0) {
+        let roomList = [];
+        for (const key in Memory.sourceList) {
+            roomList.push(key)
+        }
+
+        for (const decoderKey in Memory.decoderIndex) {
+            let closestRange = 9999;
+            let bestRoom = undefined;
+            for (let q = 0; q < roomList.length; q++) {
+                let route = Game.map.findRoute(roomList[q], Memory.decoderIndex[decoderKey]);
+                if (route != ERR_NO_PATH && route.length < closestRange) {
+                    closestRange = route.length;
+                    bestRoom = roomList[q];
+                }
+            }
+            if (bestRoom) {
+                Memory.decoderSource[decoderKey] = bestRoom;
+            }
+        }
     }
 
     //If room lacks mineral flag, calculate what flag to give it
@@ -1744,6 +1773,10 @@ function recalculateBestWorker(thisEnergyCap) {
 function memCheck() {
     if (!Memory.decoderIndex) {
         Memory.decoderIndex = new Object();
+    }
+
+    if (!Memory.decoderSource) {
+        Memory.decoderSource = new Object();
     }
 
     if (!Memory.RoomsRun) {
