@@ -230,18 +230,17 @@ var creep_Helper = {
                                 });
                             }
                         } else {
-                            if (creep.room.controller.sign && creep.room.controller.sign.username != "Montblanc") {
+                            if ((creep.room.controller.sign && creep.room.controller.sign.username != "Montblanc") || !creep.room.controller.sign) {
                                 creep.travelTo(creep.room.controller, {
                                     maxRooms: 1,
                                     ignoreRoads: true
                                 });
-                                creep.signController(creep.room.controller, '\u300C\u8F1D\u304F\u732B\u300D(\uFF90\u24DB\u11BD\u24DB\uFF90)\u2727');
-                            } else if (!creep.room.controller.sign) {
-                                creep.travelTo(creep.room.controller, {
-                                    maxRooms: 1,
-                                    ignoreRoads: true
-                                });
-                                creep.signController(creep.room.controller, '\u300C\u8F1D\u304F\u732B\u300D(\uFF90\u24DB\u11BD\u24DB\uFF90)\u2727');
+                                let roomDecoder = creep.pos.findClosestByRange(FIND_SYMBOL_DECODERS);
+                                let thisDecoderResource = ''
+                                if (roomDecoder) {
+                                    thisDecoderResource = roomDecoder.resourceType.replace("symbol_", "").toUpperCase();
+                                }
+                                creep.signController(creep.room.controller, '| ' + thisDecoderResource + ' | DM/Slack For Whitelist! Rushing RCL for big doinks');
                             }
                         }
                     }

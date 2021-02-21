@@ -118,10 +118,6 @@ module.exports.loop = function() {
         Game.flags["RemoveMineralFlags"].remove();
     }
 
-    if (Game.flags["TestBaseGeneration"] && Game.time % 1000 == 0) {
-        tool_generateBase.run(Game.flags["TestBaseGeneration"].room);
-    }
-
     if (Game.flags["SpawnOperator"]) {
         for (let pName in Game.powerCreeps) {
             if (!Game.powerCreeps[pName].shard && Game.powerCreeps[pName].className == POWER_CLASS.OPERATOR) {
@@ -267,10 +263,24 @@ module.exports.loop = function() {
                         filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username))
                     });
                     if ((hostiles.length > 0 || pHostiles.length > 0) && Memory.roomsUnderAttack.indexOf(towers[y].room.name) === -1) {
-                        Memory.roomsUnderAttack.push(towers[y].room.name);
-                        //RampartDirection = "Closed";
-                        if (!determineCreepThreat(hostiles[0], hostiles.length)) {
-                            Memory.roomsPrepSalvager.push(towers[y].room.name);
+                        let redAlert = false;
+                        for (let thisHostile in hostiles) {
+                            if (Memory.grayList.includes(hostiles[thisHostile].owner.username) && determineValidGreylist(hostiles[thisHostile])) {
+                                //If this creep is a valid configuration, ignore it.
+                                //CARRY,MOVE,3 HEAL
+                                continue;
+                            } else {
+                                redAlert = true;
+                                break;
+                            }
+                        }
+
+                        if (redAlert) {
+                            Memory.roomsUnderAttack.push(towers[y].room.name);
+                            //RampartDirection = "Closed";
+                            if (!determineCreepThreat(hostiles[0], hostiles.length)) {
+                                Memory.roomsPrepSalvager.push(towers[y].room.name);
+                            }
                         }
                     } else if ((hostiles.length == 0 && pHostiles.length == 0) && Memory.roomsUnderAttack.indexOf(towers[y].room.name) != -1) {
                         var UnderAttackPos = Memory.roomsUnderAttack.indexOf(towers[y].room.name);
@@ -325,6 +335,10 @@ module.exports.loop = function() {
                         let LockedThisTick = [];
                         //Assemble list of ramparts that need to be locked
                         for (let q = 0; q < hostiles.length; q++) {
+                            if (Memory.grayList.includes(hostiles[q].owner.username) && determineValidGreylist(hostiles[q])) {
+                                //Leave ramparts open for this fella
+                                continue;
+                            }
                             let nearbyRamparts = hostiles[q].pos.findInRange(FIND_MY_STRUCTURES, 4, {
                                 filter: {
                                     structureType: STRUCTURE_RAMPART
@@ -478,6 +492,11 @@ module.exports.loop = function() {
             				Game.map.visual.text("\u{1F6E1}" + formatNumber(Math.round(damagedStructure.hits)), new RoomPosition(1, 49, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' })           				
             			}
                     }
+                }
+
+                //Run base generation
+                if (Game.time % 1000 == 0) {
+                    tool_generateBase.run(thisRoom);
                 }
 
                 //Get list of Links
@@ -1226,9 +1245,13 @@ module.exports.loop = function() {
                     }
 
                     //Determine scorerunner need
+                    let storageTotal = 5000
+                    if (thisRoom.controller.level < 8) {
+                        storageTotal = 30000
+                    }
                     for (const decoderKey2 in Memory.decoderIndex) {
                         if (Memory.decoderSource[decoderKey2] && Memory.decoderSource[decoderKey2] == thisRoom.name) {
-                            if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= 5000) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= 5000)) {
+                            if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= storageTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= storageTotal)) {
                                 spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
                                 break;
                             }
@@ -1819,6 +1842,7 @@ function memCheck() {
         Memory.ordersFilled = [];
     }
     Memory.whiteList = [];
+    Memory.grayList = [];
     if (!Memory.blockedRooms) {
         Memory.blockedRooms = [];
     }
@@ -2343,4 +2367,21 @@ function getRoomAtOffset(xOffset, yOffset, roomName) {
     }
 
     return xName + yName;
+}
+
+function determineValidGreylist(eCreep) {
+    let healCount = 0
+    eCreep.body.forEach(function(thisPart) {
+        if (thisPart.type != CARRY && thisPart.type != MOVE && thisPart.type != HEAL) {
+            return false;
+        }
+        if (thisPart.type == HEAL) {
+            healCount += 1;
+        }
+        if (healCount > 3) {
+            return false;
+        }
+    });
+
+    return true;
 }

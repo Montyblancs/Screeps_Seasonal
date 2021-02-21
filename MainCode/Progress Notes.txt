@@ -1,4 +1,4 @@
 decoderIndex = Where the decoder for the resource is
 decoderSource = Nearest controller room to this decoder
 
-Market - Send score resource to rooms that are assigned matching key
+Good to import and error out yaaaaaaaay

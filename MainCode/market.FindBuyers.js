@@ -128,6 +128,13 @@ var market_buyers = {
             neededMinerals.push(RESOURCE_OXYGEN);
         }
 
+        //Push requested score resources into needed minerals
+        for (const thisSymbol in SYMBOLS) {
+            if (Memory.decoderSource[SYMBOLS[thisSymbol]] == thisRoom.name) {
+                neededMinerals.push(SYMBOLS[thisSymbol])
+            }
+        }
+
         for (var i in neededMinerals) {
             if (!Memory.mineralNeed[neededMinerals[i]]) {
                 Memory.mineralNeed[neededMinerals[i]] = [];

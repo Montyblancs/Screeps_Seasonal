@@ -73,6 +73,11 @@ var tower_Operate = {
                 
                 //Calculate potential defender damage
                 for (let thisHostile in allHostiles) {
+                    if (Memory.grayList.includes(allHostiles[thisHostile].owner.username) && determineValidGreylist(allHostiles[thisHostile])) {
+                        //If this creep is a valid configuration, ignore it.
+                        //CARRY,MOVE,3 HEAL
+                        continue;
+                    }
                     //Shoot at whatever target you can do the most damage to
                     //Calculate flat tower damage
                     let flatDamage = 0;
@@ -384,6 +389,23 @@ function determineCreepThreat(eCreep, totalHostiles) {
         //unboosted threat, not a problem.
         return false;
     }
+}
+
+function determineValidGreylist(eCreep) {
+    let healCount = 0
+    eCreep.body.forEach(function(thisPart) {
+        if (thisPart.type != CARRY && thisPart.type != MOVE && thisPart.type != HEAL) {
+            return false;
+        }
+        if (thisPart.type == HEAL) {
+            healCount += 1;
+        }
+        if (healCount > 3) {
+            return false;
+        }
+    });
+
+    return true;
 }
 
 module.exports = tower_Operate;
