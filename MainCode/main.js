@@ -77,7 +77,7 @@ module.exports.loop = function() {
     }
 
     //Set defaults on various memory values
-    if (Game.time % 10000 == 0 || Game.flags["CheckMemory"]) {
+    if (!Memory.RoomsRun || Game.time % 10000 == 0 || Game.flags["CheckMemory"]) {
         memCheck();
         if (Game.flags["CheckMemory"]) {
             Game.flags["CheckMemory"].remove();
