@@ -323,7 +323,7 @@ var creep_workV2 = {
                         creep.memory.structureTarget = undefined;
 
                         let thisTarget = Game.getObjectById(creep.memory.storageTarget);
-                        if (thisTarget && _.sum(thisTarget.store) > 100) {
+                        if (thisTarget && _.sum(thisTarget.store) > 0) {
                             let withdrawResult = creep.withdraw(thisTarget, RESOURCE_ENERGY);
                             if (withdrawResult == ERR_NOT_IN_RANGE) {
                                 creep.travelTo(thisTarget, {
@@ -333,7 +333,7 @@ var creep_workV2 = {
                                 creep.memory.storageTarget = undefined;
                             }
                         } else {
-                            let newContainer = findContainerWithEnergy(creep, 100);
+                            let newContainer = findContainerWithEnergy(creep, 10);
                             if (newContainer) {
                                 creep.memory.storageTarget = newContainer.id;
                                 if (creep.withdraw(newContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -346,7 +346,7 @@ var creep_workV2 = {
                     } else {
                         creep.memory.structureTarget = undefined;
 
-                        let newContainer = findContainerWithEnergy(creep, 100);
+                        let newContainer = findContainerWithEnergy(creep, 10);
                         if (newContainer) {
                             creep.memory.storageTarget = newContainer.id;
                             if (creep.withdraw(newContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
