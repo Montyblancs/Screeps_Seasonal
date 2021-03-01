@@ -5,7 +5,7 @@ var spawn_BuildFarCreeps = {
             storeTarget = thisRoom.storage
         } else {
             //find a container in the room and use that. (pre-4)
-            let containers = thisRoom.find(FIND_MY_STRUCTURES, {
+            let containers = thisRoom.find(FIND_STRUCTURES, {
                 filter: { structureType: STRUCTURE_CONTAINER }
             });
 
@@ -180,7 +180,7 @@ var spawn_BuildFarCreeps = {
                 farMineralMiners3 = _.filter(controlledCreeps, (creep) => creep.memory.priority == 'farMineralMiner' && creep.memory.homeRoom == thisRoom.name && creep.memory.targetFlag == thisRoom.name + "FarMineral3");
             }
 
-            let farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE];
+            let farMinerConfig = [];
 
             //760 Points (Level 3)
             let farGuardConfig = [TOUGH, MOVE, MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK, MOVE, HEAL];
@@ -246,85 +246,88 @@ var spawn_BuildFarCreeps = {
                 blockedRole = Memory.creepInQue[RoomPointer + 1];
             }
 
-            if (Memory.warMode) {
-                if (eFarGuards.length < 1 && Game.flags[thisRoom.name + "eFarGuard"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "eFarGuard"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "eFarGuard"].name;
+            if (thisRoom.controller.level >= 4) {
+                if (Memory.warMode) {
+                    if (eFarGuards.length < 1 && Game.flags[thisRoom.name + "eFarGuard"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "eFarGuard"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "eFarGuard"].name;
+                    }
                 }
-            }
 
-            if ((Game.flags[thisRoom.name + "FarGuard"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuardTEMP"] && prioritizedRole == '') {
-                if (farGuards.length < 1 && Game.flags[thisRoom.name + "FarGuard"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard"].name;
+                if ((Game.flags[thisRoom.name + "FarGuard"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuardTEMP"] && prioritizedRole == '') {
+                    if (farGuards.length < 1 && Game.flags[thisRoom.name + "FarGuard"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard"].name;
+                    }
                 }
-            }
 
-            if ((Game.flags[thisRoom.name + "FarGuard2"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard2"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard2TEMP"] && prioritizedRole == '') {
-                if (farGuards2.length < 1 && Game.flags[thisRoom.name + "FarGuard2"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard2"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard2"].name;
+                if ((Game.flags[thisRoom.name + "FarGuard2"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard2"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard2TEMP"] && prioritizedRole == '') {
+                    if (farGuards2.length < 1 && Game.flags[thisRoom.name + "FarGuard2"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard2"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard2"].name;
+                    }
                 }
-            }
 
-            if (!Flag50 && (Game.flags[thisRoom.name + "FarGuard3"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard3"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard3TEMP"] && prioritizedRole == '') {
-                if (farGuards3.length < 1 && Game.flags[thisRoom.name + "FarGuard3"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard3"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard3"].name;
+                if (!Flag50 && (Game.flags[thisRoom.name + "FarGuard3"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard3"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard3TEMP"] && prioritizedRole == '') {
+                    if (farGuards3.length < 1 && Game.flags[thisRoom.name + "FarGuard3"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard3"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard3"].name;
+                    }
                 }
-            }
 
-            if (!Flag50 && (Game.flags[thisRoom.name + "FarGuard4"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard4"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard4TEMP"] && prioritizedRole == '') {
-                if (farGuards4.length < 1 && Game.flags[thisRoom.name + "FarGuard4"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard4"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard4"].name;
+                if (!Flag50 && (Game.flags[thisRoom.name + "FarGuard4"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard4"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard4TEMP"] && prioritizedRole == '') {
+                    if (farGuards4.length < 1 && Game.flags[thisRoom.name + "FarGuard4"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard4"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard4"].name;
+                    }
                 }
-            }
 
-            if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard5"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard5"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard5TEMP"] && prioritizedRole == '') {
-                if (farGuards5.length < 1 && Game.flags[thisRoom.name + "FarGuard5"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard5"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard5"].name;
+                if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard5"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard5"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard5TEMP"] && prioritizedRole == '') {
+                    if (farGuards5.length < 1 && Game.flags[thisRoom.name + "FarGuard5"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard5"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard5"].name;
+                    }
                 }
-            }
 
-            if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard6"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard6"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard6TEMP"] && prioritizedRole == '') {
-                if (farGuards6.length < 1 && Game.flags[thisRoom.name + "FarGuard6"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard6"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard6"].name;
+                if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard6"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard6"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard6TEMP"] && prioritizedRole == '') {
+                    if (farGuards6.length < 1 && Game.flags[thisRoom.name + "FarGuard6"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard6"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard6"].name;
+                    }
                 }
-            }
 
-            if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard7"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard7"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard7TEMP"] && prioritizedRole == '') {
-                if (farGuards7.length < 1 && Game.flags[thisRoom.name + "FarGuard7"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard7"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard7"].name;
+                if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard7"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard7"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard7TEMP"] && prioritizedRole == '') {
+                    if (farGuards7.length < 1 && Game.flags[thisRoom.name + "FarGuard7"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard7"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard7"].name;
+                    }
                 }
-            }
 
-            if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard8"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard8"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard8TEMP"] && prioritizedRole == '') {
-                if (farGuards8.length < 1 && Game.flags[thisRoom.name + "FarGuard8"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard8"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard8"].name;
+                if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard8"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard8"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard8TEMP"] && prioritizedRole == '') {
+                    if (farGuards8.length < 1 && Game.flags[thisRoom.name + "FarGuard8"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard8"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard8"].name;
+                    }
                 }
-            }
 
-            if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard9"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard9"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard9TEMP"] && prioritizedRole == '') {
-                if (farGuards9.length < 1 && Game.flags[thisRoom.name + "FarGuard9"] && blockedRole != 'farGuard') {
-                    prioritizedRole = 'farGuard';
-                    roomTarget = Game.flags[thisRoom.name + "FarGuard9"].pos.roomName;
-                    flagName = Game.flags[thisRoom.name + "FarGuard9"].name;
+                if (!Flag25 && (Game.flags[thisRoom.name + "FarGuard9"] && Memory.FarRoomsUnderAttack.indexOf(Game.flags[thisRoom.name + "FarGuard9"].pos.roomName) != -1) || Game.flags[thisRoom.name + "FarGuard9TEMP"] && prioritizedRole == '') {
+                    if (farGuards9.length < 1 && Game.flags[thisRoom.name + "FarGuard9"] && blockedRole != 'farGuard') {
+                        prioritizedRole = 'farGuard';
+                        roomTarget = Game.flags[thisRoom.name + "FarGuard9"].pos.roomName;
+                        flagName = Game.flags[thisRoom.name + "FarGuard9"].name;
+                    }
                 }
             }
+            
 
             var jobSpecific = undefined;
 
@@ -340,7 +343,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules.length < muleCount && blockedRole != 'farMule') {
@@ -369,7 +372,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining2"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining2"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules2.length < muleCount && blockedRole != 'farMule') {
@@ -398,7 +401,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining3"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining3"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules3.length < muleCount && blockedRole != 'farMule') {
@@ -425,7 +428,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining4"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining4"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules4.length < muleCount && blockedRole != 'farMule') {
@@ -452,7 +455,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining5"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining5"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules5.length < muleCount && blockedRole != 'farMule') {
@@ -479,7 +482,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining6"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining6"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules6.length < muleCount && blockedRole != 'farMule') {
@@ -506,7 +509,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining7"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining7"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules7.length < muleCount && blockedRole != 'farMule') {
@@ -533,7 +536,7 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining8"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining8"].pos.roomName + "NoSKRoom"]) {
+                    } else {
                         farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                     }
                 } else if (farMules8.length < muleCount && blockedRole != 'farMule') {
@@ -560,8 +563,8 @@ var spawn_BuildFarCreeps = {
                     if (Game.flags[Game.flags[thisRoom.name + "FarMining9"].pos.roomName + "SKRoom"]) {
                         jobSpecific = "SKMiner";
                         farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL, HEAL];
-                    } else if (Game.flags[Game.flags[thisRoom.name + "FarMining9"].pos.roomName + "NoSKRoom"]) {
-                        getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
+                    } else {
+                        farMinerConfig = getMinerBuild(thisRoom.energyCapacityAvailable, thisRoom);
                         //farMinerConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE];
                     }
                 } else if (farMules9.length < muleCount && blockedRole != 'farMule') {
@@ -742,6 +745,7 @@ function getMinerBuild(energyCap, thisRoom) {
             workTotal += 1;
             thisConfig.push(MOVE);
         }
+        energyCap = energyCap - configCost
     }
 
     thisConfig.sort();
