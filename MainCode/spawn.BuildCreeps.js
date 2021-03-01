@@ -28,9 +28,10 @@ var spawn_BuildCreeps = {
 
         if (thisRoom.controller.level == 2) {
             //speedrun to 4
-            builderMax = 12;
-        } else if (thisRoom.controller.level == 3) {
             builderMax = 8;
+            upgraderMax = 4;
+        } else if (thisRoom.controller.level == 3) {
+            builderMax = 6;
         }
 
         if (strSources.length == 1) {
