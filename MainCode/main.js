@@ -1314,6 +1314,7 @@ module.exports.loop = function() {
             roomList.push(key)
         }
 
+        let publicSymbols = new Object();
         for (const decoderKey in Memory.decoderIndex) {
             let closestRange = 9999;
             let bestRoom = undefined;
@@ -1323,11 +1324,18 @@ module.exports.loop = function() {
                     closestRange = route.length;
                     bestRoom = roomList[q];
                 }
+                if (roomList[q] == Memory.decoderIndex[decoderKey]) {
+                    //If own index room, record in public segment.
+                    publicSymbols[roomList[q]] = decoderKey
+                }
             }
             if (bestRoom) {
                 Memory.decoderSource[decoderKey] = bestRoom;
             }
         }
+
+        //Write owned decoders to public segment
+        RawMemory.segments[0] = '[{"symbols":' + JSON.stringify(publicSymbols) + '}]';
     }
 
     //If room lacks mineral flag, calculate what flag to give it
