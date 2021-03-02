@@ -482,7 +482,7 @@ var tool_generateBase = {
 										//Dead middle
 										thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_RAMPART)
 										if (!Game.flags[thisRoom.name + "Supply"]) {
-											thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "Supply"]);
+											thisRoom.createFlag(thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "Supply");
 										}
 										break;
 									case 6:

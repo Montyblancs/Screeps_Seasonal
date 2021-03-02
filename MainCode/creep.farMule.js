@@ -353,7 +353,7 @@ let creep_farMule = {
                 }
             }
 
-            if (_.sum(creep.carry) > creep.carryCapacity - 300 && !creep.memory.didRoadSearch && !creep.memory.doNotRoadSearch && roadSearchTarget) {
+            if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && _.sum(creep.carry) > creep.carryCapacity - 300 && !creep.memory.didRoadSearch && !creep.memory.doNotRoadSearch && roadSearchTarget) {
                 creep.memory.didRoadSearch = true;
                 //Autogenerate roads
                 //.dest.x, .dest.y, .dest.room
