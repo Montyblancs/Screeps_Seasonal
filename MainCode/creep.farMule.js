@@ -85,22 +85,25 @@ let creep_farMule = {
                 	//Check for score containers
                 	let foundScore = false;
 
-            		let scoreContainer = creep.pos.findClosestByRange(FIND_SYMBOL_CONTAINERS, {
-	                	filter: (thisScore) => (_.sum(thisScore.store) > 0)
-	            	});
-                    if (scoreContainer) {
-                        //Check resource type & determine if room is overloaded
-                        //scoreContainer.resourceType
-                        if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && (!Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] || Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] < 30000)) {
-                            if (scoreContainer && creep.withdraw(scoreContainer, Object.keys(scoreContainer.store)[0]) == ERR_NOT_IN_RANGE) {
-                                creep.travelTo(scoreContainer, {
-                                    ignoreRoads: roadIgnore,
-                                    maxRooms: 1
-                                })
-                                foundScore = true;
-                            }   
-                        }
-                    }	            		
+                	if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
+                		let scoreContainer = creep.pos.findClosestByRange(FIND_SYMBOL_CONTAINERS, {
+		                	filter: (thisScore) => (_.sum(thisScore.store) > 0)
+		            	});
+	                    if (scoreContainer) {
+	                        //Check resource type & determine if room is overloaded
+	                        //scoreContainer.resourceType
+	                        if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && (!Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] || Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] < 30000)) {
+	                            if (scoreContainer && creep.withdraw(scoreContainer, Object.keys(scoreContainer.store)[0]) == ERR_NOT_IN_RANGE) {
+	                                creep.travelTo(scoreContainer, {
+	                                    ignoreRoads: roadIgnore,
+	                                    maxRooms: 1
+	                                })
+	                                foundScore = true;
+	                            }   
+	                        }
+	                    }	 
+                	}
+           		
 
                     let foundDrop = false;
                     if (Game.flags[creep.room.name + "SKRoom"] && !foundScore) {
@@ -258,6 +261,15 @@ let creep_farMule = {
                     let didTransfer = false;
                     let storageUnit = Game.getObjectById(creep.memory.storageSource);
                     if (storageUnit) {
+                    	if (storageUnit.structureType == STRUCTURE_CONTAINER && storageUnit.store.getFreeCapacity() < 50) {
+						    let containers = creep.room.find(FIND_STRUCTURES, {
+		                        filter: (tStructure) => (tStructure.structureType == STRUCTURE_CONTAINER && tStructure.store.getFreeCapacity() > 50)
+		                    });
+		                    if (containers.length) {
+		                    	storageUnit = containers[0];
+		                    	creep.memory.storageSource = containers[0].id;
+		                    }
+                    	}
                         if (!creep.memory.storagePosition) {
                             creep.memory.storagePosition = storageUnit.pos
                         }

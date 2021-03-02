@@ -631,8 +631,8 @@ module.exports.loop = function() {
                 //Record this room's decoder
                 if (Game.time % 1000 == 0) {
                     let roomDecoder = thisRoom.find(FIND_SYMBOL_DECODERS)
-                    if (roomDecoder && !Memory.decoderIndex[roomDecoder.resourceType]) {
-                        Memory.decoderIndex[roomDecoder.resourceType] = thisRoom.name;
+                    if (roomDecoder.length && !Memory.decoderIndex[roomDecoder[0].resourceType]) {
+                        Memory.decoderIndex[roomDecoder[0].resourceType] = thisRoom.name;
                     }
                 }
 

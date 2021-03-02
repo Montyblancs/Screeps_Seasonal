@@ -26,12 +26,25 @@ var spawn_BuildCreeps = {
 
         let bareMinConfig = [MOVE, WORK, WORK, CARRY];
 
+        let containerStore = 0
+        if (thisRoom.controller.level <= 3) {
+            let containers = thisRoom.find(FIND_STRUCTURES, {
+                filter: (tStructure) => (tStructure.structureType == STRUCTURE_CONTAINER)
+            });
+            for (let thisContainer in containers) {
+                containerStore += containers[thisContainer].store.getUsedCapacity()
+            }
+        }
+
         if (thisRoom.controller.level == 2) {
             //speedrun to 4
-            builderMax = 8;
-            upgraderMax = 4;
+            builderMax = 12;
         } else if (thisRoom.controller.level == 3) {
-            builderMax = 6;
+            builderMax = 9;
+        }
+
+        if (containerStore >= 2000) {
+            upgraderMax = upgraderMax * 2
         }
 
         if (strSources.length == 1) {
