@@ -51,7 +51,7 @@ let creep_farMule = {
             roadIgnore = true;
         }
 
-        if (creep.store.getFreeCapacity() < 300 || (creep.store.getUsedCapacity() > 0 && creep.ticksToLive <= 120) && !creep.memory.storing) {
+        if (creep.store.getFreeCapacity() < 150 || (creep.store.getUsedCapacity() > 0 && creep.ticksToLive <= 120) && !creep.memory.storing) {
             creep.memory.storing = true;
         } else if (creep.store.getUsedCapacity() == 0 && creep.memory.storing) {
             creep.memory.storing = false;
