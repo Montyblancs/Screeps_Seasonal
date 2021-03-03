@@ -1789,19 +1789,19 @@ function recalculateBestWorker(thisEnergyCap) {
     //1 Full balanced worker module : MOVE, CARRY, WORK - 200pts
     //Half energy limit and double worker numbers to get more work done
     let EnergyRemaining = thisEnergyCap / 2;
-    if (EnergyRemaining < 200) {
-        EnergyRemaining = 200;
+    if (EnergyRemaining < 250) {
+        EnergyRemaining = 250;
     }
     bestWorkerConfig = [];
-    while ((EnergyRemaining / 200) >= 1 || bestWorkerConfig.length >= 21) {
-        bestWorkerConfig.push(MOVE, CARRY, WORK);
+    while ((EnergyRemaining / 250) >= 1 || bestWorkerConfig.length >= 21) {
+        bestWorkerConfig.push(MOVE, MOVE, CARRY, WORK);
         if (bestWorkerConfig.length > 21) {
             while (bestWorkerConfig.length > 21) {
                 bestWorkerConfig.splice(-1, 1)
             }
             break;
         }
-        EnergyRemaining = EnergyRemaining - 200;
+        EnergyRemaining = EnergyRemaining - 250;
     }
     //Make the modules pretty
     bestWorkerConfig.sort();
