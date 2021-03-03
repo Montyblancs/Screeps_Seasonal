@@ -735,12 +735,11 @@ function getMinerBuild(energyCap, thisRoom) {
     let configCost = (BODYPART_COST[WORK] * 2) + BODYPART_COST[MOVE];
     energyCap = energyCap - (BODYPART_COST[MOVE] + BODYPART_COST[CARRY] + BODYPART_COST[WORK]);
 
-    let workCap = 10;
-    let workTotal = 1
-    while ((energyCap / configCost) >= 1 && workTotal < 10) {
+    let workTotal = 1;
+    while ((energyCap / configCost) >= 1 && workTotal < 6) {
         thisConfig.push(WORK)
         workTotal += 1;
-        if (workTotal < 10) {
+        if (workTotal < 6) {
             thisConfig.push(WORK)
             workTotal += 1;
             thisConfig.push(MOVE);

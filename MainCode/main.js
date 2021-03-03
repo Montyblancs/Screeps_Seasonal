@@ -1335,7 +1335,7 @@ module.exports.loop = function() {
         }
 
         //Write owned decoders to public segment
-        RawMemory.segments[0] = '[{"symbols":' + JSON.stringify(publicSymbols) + '}]';
+        RawMemory.segments[1] = '[{"symbols":' + JSON.stringify(publicSymbols) + '}]';
     }
 
     //If room lacks mineral flag, calculate what flag to give it

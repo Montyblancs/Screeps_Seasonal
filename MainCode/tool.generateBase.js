@@ -277,14 +277,14 @@ var tool_generateBase = {
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)
 												break;
 											case 9:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
 												break;
 										}										
 										break;
 									case 4:
 										switch(bestDirection) {
 											case 1:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
 												break;
 											case 3:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD)
@@ -293,7 +293,7 @@ var tool_generateBase = {
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)
 												break;
 											case 9:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
 												break;
 										}							
 										break;
@@ -342,7 +342,7 @@ var tool_generateBase = {
 												}
 												break;
 											case 3:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
 												break;
 											case 7:
 												if (thisRoom.controller.level >= 6) {
@@ -428,10 +428,10 @@ var tool_generateBase = {
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD)
 												break;
 											case 3:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
 												break;
 											case 7:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
 												break;
 											case 9:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)
@@ -531,10 +531,10 @@ var tool_generateBase = {
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)
 												break;
 											case 3:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
 												break;
 											case 7:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
 												break;
 											case 9:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD)
@@ -620,7 +620,7 @@ var tool_generateBase = {
 												}
 												break;
 											case 7:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
 												break;
 											case 9:
 												//Nothing
@@ -669,7 +669,7 @@ var tool_generateBase = {
 									case 6:
 										switch(bestDirection) {
 											case 1:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_NUKER)
 												break;
 											case 3:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)
@@ -678,14 +678,14 @@ var tool_generateBase = {
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_ROAD)
 												break;
 											case 9:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_POWER_SPAWN)
 												break;
 										}						
 										break;
 									case 7:
 										switch(bestDirection) {
 											case 1:
-												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
+												//thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_FACTORY)
 												break;
 											case 3:
 												thisRoom.createConstructionSite(thisCursor[0] + x, thisCursor[1] + y, STRUCTURE_LAB)

@@ -21,7 +21,7 @@ var spawn_BuildCreeps5 = {
 
         let minerMax = 2;
         let muleMax = 1;
-        let upgraderMax = 2;
+        let upgraderMax = 3;
         let repairMax = 1;
         let upSupplierMax = 1;
         if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] < 50000) {
@@ -432,7 +432,7 @@ var spawn_BuildCreeps5 = {
 
         if (Game.flags[thisRoom.name + "upFocus"]) {
             //Laser focus on upgrading
-            muleMax = muleMax + repairMax;
+            //muleMax = muleMax + repairMax;
             upgraderMax = upgraderMax + repairMax;
             repairMax = 0;
         }
