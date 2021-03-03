@@ -454,6 +454,12 @@ module.exports.loop = function() {
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ALKALIDE] = 0;
     }
 
+    //Run base gen on command (new rooms)
+    if (Game.flags["GenerateBase"]) {
+        tool_generateBase.run(Game.flags["GenerateBase"].room);
+        Game.flags["GenerateBase"].remove();
+    }
+
     for (const i in Game.spawns) {
         var thisRoom = Game.spawns[i].room;
         if (thisRoom.controller.owner) {
