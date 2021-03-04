@@ -397,7 +397,7 @@ var creep_labWorker = {
                 if (Object.keys(creep.room.storage.store).length > 1 && creep.room.terminal && creep.room.terminal.store.getFreeCapacity() >= 25000) {
                     let withdrawResult = "N/A"
                     for (let i = 0, len = Object.keys(creep.room.storage.store).length; i < len; i++) {
-                        if (Object.keys(creep.room.storage.store)[i] == RESOURCE_POWER || Object.keys(creep.room.storage.store)[i] == RESOURCE_ENERGY || Object.keys(creep.room.storage.store)[i] == RESOURCE_SCORE) {
+                        if (Object.keys(creep.room.storage.store)[i] == RESOURCE_POWER || Object.keys(creep.room.storage.store)[i] == RESOURCE_ENERGY || SYMBOLS.indexOf(Object.keys(creep.room.storage.store)[i]) > -1) {
                             continue;
                         } else {
                             withdrawResult = creep.withdraw(creep.room.storage, Object.keys(creep.room.storage.store)[i]);

@@ -1788,7 +1788,7 @@ function recalculateBestWorker(thisEnergyCap) {
 
     //1 Full balanced worker module : MOVE, CARRY, WORK - 200pts
     //Half energy limit and double worker numbers to get more work done
-    let EnergyRemaining = thisEnergyCap / 2;
+    let EnergyRemaining = thisEnergyCap / 1.5;
     if (EnergyRemaining < 250) {
         EnergyRemaining = 250;
     }

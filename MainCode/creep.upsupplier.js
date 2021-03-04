@@ -157,7 +157,7 @@ function determineIfEmptyEnergy(thisLink, creep) {
 function determineScoreNeed(creep, storage, terminal) {
 	for (const key in storage.store) {
 		//Don't move score from storage if it's supposed to be here
-		if (SYMBOLS.indexOf(key) > -1 && (!Memory.decorderIndex[key] || (Memory.decoderIndex[key] && Memory.decoderIndex[key] != creep.room.name))) {
+		if (SYMBOLS.indexOf(key) > -1 && (!Memory.decoderIndex[key] || (Memory.decoderIndex[key] && Memory.decoderIndex[key] != creep.room.name))) {
 			if (storage.store[key] >= 1000 && (!terminal.store[key] || terminal.store[key] < 5000)) {
 				return key;
 			}

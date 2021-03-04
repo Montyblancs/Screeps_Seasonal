@@ -301,7 +301,7 @@ var spawn_BuildCreeps5 = {
         let strExtractor = Memory.extractorList[thisRoom.name];
         let readyForMineral = false;
         let mineralType = Game.getObjectById(strMineral[0]).mineralType
-        if (strExtractor[0] && thisRoom.terminal && strMineral[0] && (!thisRoom.terminal.store[mineralType] || thisRoom.terminal.store[mineralType] <= 75000)) {
+        if (strExtractor[0] && thisRoom.terminal && strMineral[0] && (!thisRoom.terminal.store[mineralType] || thisRoom.terminal.store[mineralType] <= 10000)) {
             readyForMineral = true;
         }
 
