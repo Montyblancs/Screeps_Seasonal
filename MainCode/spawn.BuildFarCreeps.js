@@ -612,6 +612,15 @@ var spawn_BuildFarCreeps = {
                 }
             }
 
+            //Ensure that you aren't deploying onto the supplier spot
+            let buildDirections = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+            //Determine if this spawn is next to the supply flag, and if so, restrict spawn directions
+            if (Game.flags[thisRoom.name + "Supply"] && Game.flags[thisRoom.name + "Supply"].pos.isNearTo(spawn)) {
+                let targetDir =  spawn.pos.getDirectionTo(Game.flags[thisRoom.name + "Supply"]);
+                //Remove direction from buildDirections, add it to supplierDirection
+                buildDirections.splice(buildDirections.indexOf(targetDir), 1);
+            }
+
             if (prioritizedRole != '') {
                 if (prioritizedRole == 'farClaimer') {
                     var farClaimerConfig = getClaimerBuild(thisRoom.energyCapacityAvailable);
@@ -626,7 +635,8 @@ var spawn_BuildFarCreeps = {
                                 homeRoom: thisRoom.name,
                                 deathWarn: _.size(farClaimerConfig) * 5,
                                 targetFlag: flagName
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.FarClaimerNeeded[Game.flags[flagName].pos.roomName] = false;
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, '', spawn.name);
@@ -645,7 +655,8 @@ var spawn_BuildFarCreeps = {
                                 targetFlag: flagName,
                                 jobSpecific: jobSpecific,
                                 nextReservationCheck: 0
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, '', spawn.name);
                     }
@@ -663,7 +674,8 @@ var spawn_BuildFarCreeps = {
                                 fromSpawn: spawn.id,
                                 deathWarn: _.size(farMuleConfig) * 6,
                                 targetFlag: flagName
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, '', spawn.name);
                     }
@@ -683,7 +695,8 @@ var spawn_BuildFarCreeps = {
                                 fromSpawn: spawn.id,
                                 deathWarn: _.size(farGuardConfig) * warnMulti,
                                 targetFlag: flagName
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, '', spawn.name);
                     }
@@ -701,7 +714,8 @@ var spawn_BuildFarCreeps = {
                                 storageSource: storageID,
                                 deathWarn: _.size(farMinerConfig) * 5,
                                 targetFlag: flagName
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, '', spawn.name);
                     }

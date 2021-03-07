@@ -443,9 +443,9 @@ var spawn_BuildCreeps5 = {
         let supplierDirection = [];
         //Determine if this spawn is next to the supply flag, and if so, restrict spawn directions
         if (Game.flags[thisRoom.name + "Supply"] && Game.flags[thisRoom.name + "Supply"].pos.isNearTo(spawn)) {
-        	let targetDir =  Game.flags[thisRoom.name + "Supply"].pos.getDirectionTo(spawn);
+        	let targetDir =  spawn.pos.getDirectionTo(Game.flags[thisRoom.name + "Supply"]);
         	//Remove direction from buildDirections, add it to supplierDirection
-            buildDirections.splice(buildDirections.indexOf(targetDir, 1));
+            buildDirections.splice(buildDirections.indexOf(targetDir), 1);
             supplierDirection.push(targetDir)
         }
 
