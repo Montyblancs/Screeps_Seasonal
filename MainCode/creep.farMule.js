@@ -357,6 +357,7 @@ let creep_farMule = {
                 creep.memory.didRoadSearch = true;
                 //Autogenerate roads
                 //.dest.x, .dest.y, .dest.room
+                roadSearchTarget = Game.rooms[creep.memory.homeRoom].storage.pos;
                 let thisPath = creep.room.findPath(creep.pos, roadSearchTarget, {
                     ignoreCreeps: true
                 });

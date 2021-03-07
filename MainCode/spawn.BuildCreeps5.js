@@ -439,6 +439,16 @@ var spawn_BuildCreeps5 = {
 
         let bareMinConfig = [MOVE, WORK, WORK, CARRY];
 
+        let buildDirections = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        let supplierDirection = [];
+        //Determine if this spawn is next to the supply flag, and if so, restrict spawn directions
+        if (Game.flags[thisRoom.name + "Supply"] && Game.flags[thisRoom.name + "Supply"].pos.isNearTo(spawn)) {
+        	let targetDir =  Game.flags[thisRoom.name + "Supply"].pos.getDirectionTo(spawn);
+        	//Remove direction from buildDirections, add it to supplierDirection
+            buildDirections.splice(buildDirections.indexOf(targetDir, 1));
+            supplierDirection.push(targetDir)
+        }
+
         if (RoomCreeps.length <= 1) {
             if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 500) {
                 let configCost = calculateConfigCost([MOVE, MOVE, CARRY, CARRY, CARRY, CARRY]);
@@ -457,7 +467,8 @@ var spawn_BuildCreeps5 = {
                             fromSpawn: spawn.id,
                             homeRoom: thisRoom.name,
                             linkSource: connectedLink
-                        }
+                        },
+                        directions: buildDirections
                     });
                     Memory.isSpawning = true;
                 }
@@ -479,7 +490,8 @@ var spawn_BuildCreeps5 = {
                             deathWarn: _.size([MOVE, WORK, WORK, CARRY]) * 4,
                             fromSpawn: spawn.id,
                             homeRoom: thisRoom.name
-                        }
+                        },
+                        directions: buildDirections
                     });
                     Memory.isSpawning = true;
                 }
@@ -497,7 +509,7 @@ var spawn_BuildCreeps5 = {
                 }
             }
 
-            if (suppliers.length < supplierMax && !blockedRole.includes('supplier')) {
+            if (suppliers.length < supplierMax && !blockedRole.includes('supplier') && supplierDirection.length > 0) {
                 Memory.isSpawning = true;
                 let supplierConfig = [MOVE, CARRY, CARRY, CARRY];
                 let configCost = calculateConfigCost(supplierConfig);
@@ -510,7 +522,8 @@ var spawn_BuildCreeps5 = {
                             fromSpawn: spawn.id,
                             homeRoom: thisRoom.name,
                             atSpot: false
-                        }
+                        },
+                        directions: supplierDirection
                     });
                     Memory.creepInQue.push(thisRoom.name, 'supplier', '', spawn.name);
                 }
@@ -589,7 +602,8 @@ var spawn_BuildCreeps5 = {
                             priority: 'defender',
                             fromSpawn: spawn.id,
                             homeRoom: thisRoom.name
-                        }
+                        },
+                        directions: buildDirections
                     });
                     Memory.isSpawning = true;
                 }
@@ -667,7 +681,7 @@ var spawn_BuildCreeps5 = {
                 if (strLinks.length >= 4) {
                     connectedLink = strLinks[3];
                 }
-            } else if (suppliers.length < supplierMax && !blockedRole.includes('supplier')) {
+            } else if (suppliers.length < supplierMax && !blockedRole.includes('supplier') && supplierDirection.length > 0) {
                 prioritizedRole = 'supplier';
             } else if (mules.length < muleMax && !blockedRole.includes('mule')) {
                 prioritizedRole = 'mule';
@@ -755,7 +769,8 @@ var spawn_BuildCreeps5 = {
                                     minePower: minePower,
                                     ignoreTravel: false,
                                     atSpot: false
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         } else {
                             spawn.spawnCreep(minerConfig, 'miner_' + spawn.name + '_' + Game.time, {
@@ -770,7 +785,8 @@ var spawn_BuildCreeps5 = {
                                     minePower: minePower,
                                     ignoreTravel: false,
                                     atSpot: false
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         }
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
@@ -801,7 +817,8 @@ var spawn_BuildCreeps5 = {
                                 deathWarn: _.size(muleConfig) * 4,
                                 fromSpawn: spawn.id,
                                 homeRoom: thisRoom.name
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
@@ -834,7 +851,8 @@ var spawn_BuildCreeps5 = {
                                 deathWarn: _.size(upgraderConfig) * 6,
                                 fromSpawn: spawn.id,
                                 homeRoom: thisRoom.name
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
@@ -855,7 +873,8 @@ var spawn_BuildCreeps5 = {
                                 deathWarn: _.size(upSupplierConfig) * 5,
                                 fromSpawn: spawn.id,
                                 homeRoom: thisRoom.name
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
 
@@ -878,7 +897,8 @@ var spawn_BuildCreeps5 = {
                                 deathWarn: _.size(repairConfig) * 4,
                                 fromSpawn: spawn.id,
                                 homeRoom: thisRoom.name
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
@@ -895,7 +915,8 @@ var spawn_BuildCreeps5 = {
                                 fromSpawn: spawn.id,
                                 homeRoom: thisRoom.name,
                                 atSpot: false
-                            }
+                            },
+                        	directions: supplierDirection
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
@@ -923,7 +944,8 @@ var spawn_BuildCreeps5 = {
                                     deathWarn: _.size(distributorConfig) * 4,
                                     fromSpawn: spawn.id,
                                     homeRoom: thisRoom.name
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         } else {
                             spawn.spawnCreep(distributorConfig, 'distribute_' + spawn.name + '_' + Game.time, {
@@ -932,7 +954,8 @@ var spawn_BuildCreeps5 = {
                                     deathWarn: _.size(distributorConfig) * 4,
                                     fromSpawn: spawn.id,
                                     homeRoom: thisRoom.name
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         }
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
@@ -956,7 +979,8 @@ var spawn_BuildCreeps5 = {
                                 nextMine: 0,
                                 deathWarn: _.size(mineralMinerConfig) * 4,
                                 onPoint: false
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
 
@@ -1003,7 +1027,8 @@ var spawn_BuildCreeps5 = {
                                     deathWarn: _.size(labWorkerConfig) * 4,
                                     fromSpawn: spawn.id,
                                     homeRoom: thisRoom.name
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         } else if (Memory.labList[thisRoom.name].length >= 9) {
                             spawn.spawnCreep(labWorkerConfig, 'labWorker_' + spawn.name + '_' + Game.time, {
@@ -1038,7 +1063,8 @@ var spawn_BuildCreeps5 = {
                                     deathWarn: _.size(labWorkerConfig) * 4,
                                     fromSpawn: spawn.id,
                                     homeRoom: thisRoom.name
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         } else if (Memory.labList[thisRoom.name].length >= 6) {
                             spawn.spawnCreep(labWorkerConfig, 'labWorker_' + spawn.name + '_' + Game.time, {
@@ -1067,7 +1093,8 @@ var spawn_BuildCreeps5 = {
                                     deathWarn: _.size(labWorkerConfig) * 4,
                                     fromSpawn: spawn.id,
                                     homeRoom: thisRoom.name
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         } else {
                             spawn.spawnCreep(labWorkerConfig, 'labWorker_' + spawn.name + '_' + Game.time, {
@@ -1090,7 +1117,8 @@ var spawn_BuildCreeps5 = {
                                     deathWarn: _.size(labWorkerConfig) * 4,
                                     fromSpawn: spawn.id,
                                     homeRoom: thisRoom.name
-                                }
+                                },
+                        		directions: buildDirections
                             });
                         }
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
@@ -1108,7 +1136,8 @@ var spawn_BuildCreeps5 = {
                                 targetResource: undefined,
                                 fromSpawn: spawn.id,
                                 homeRoom: thisRoom.name
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
@@ -1123,7 +1152,8 @@ var spawn_BuildCreeps5 = {
                                 deathWarn: _.size([CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]) * 6,
                                 storageTarget: thisRoom.storage.id,
                                 homeRoom: thisRoom.name
-                            }
+                            },
+                        	directions: buildDirections
                         });
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
@@ -1155,7 +1185,8 @@ var spawn_BuildCreeps5 = {
                             deathWarn: _.size([MOVE, MOVE, CARRY, CARRY, CARRY, CARRY]) * 4,
                             fromSpawn: spawn.id,
                             homeRoom: thisRoom.name
-                        }
+                        },
+                        directions: buildDirections
                     });
                     Memory.creepInQue.push(thisRoom.name, 'mule', '', spawn.name);
                 }
