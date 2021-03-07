@@ -853,18 +853,18 @@ var tool_generateBase = {
 	        		if (terrain.get(linkCursor[0] + linkOffsetX, linkCursor[1] + linkOffsetY) != TERRAIN_MASK_WALL) {
 	        			thisRoom.createConstructionSite(linkCursor[0] + linkOffsetX, linkCursor[1] + linkOffsetY, STRUCTURE_LINK)
 	        			placedLinks += 1 
-	        		} else {
-	        			linkOffsetX += 1
-	        			if (linkOffsetX >= 2) {
-	        				linkOffsetX = -1;
-	        				linkOffsetY += 1
-	        			}
-
-	        			if (linkOffsetY >= 2) {
-	        				//Couldn't find space
-	        				placedLinks = 99
-	        			}
 	        		}
+	        			
+        			linkOffsetX += 1
+        			if (linkOffsetX >= 2) {
+        				linkOffsetX = -1;
+        				linkOffsetY += 1
+        			}
+
+        			if (linkOffsetY >= 2) {
+        				//Couldn't find space
+        				placedLinks = 99
+        			}
 	        	}
 	        	placedLinks = 0;
 
