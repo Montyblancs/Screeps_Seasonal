@@ -1856,7 +1856,7 @@ function memCheck() {
         Memory.ordersFilled = [];
     }
     Memory.whiteList = [];
-    Memory.grayList = [];
+    Memory.grayList = ["Tigga", "Cub"];
     if (!Memory.blockedRooms) {
         Memory.blockedRooms = [];
     }
