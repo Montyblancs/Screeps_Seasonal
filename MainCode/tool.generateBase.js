@@ -270,7 +270,7 @@ var tool_generateBase = {
 											case 3:
 												//Nothing
 												if (!Game.flags[thisRoom.name + "storageMiner"]) {
-													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+													thisRoom.createFlag(thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner");
 												}
 												break;
 											case 7:
@@ -338,7 +338,7 @@ var tool_generateBase = {
 											case 1:
 												//Nothing
 												if (!Game.flags[thisRoom.name + "storageMiner"]) {
-													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+													thisRoom.createFlag(thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner");
 												}
 												break;
 											case 3:
@@ -625,7 +625,7 @@ var tool_generateBase = {
 											case 9:
 												//Nothing
 												if (!Game.flags[thisRoom.name + "storageMiner"]) {
-													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+													thisRoom.createFlag(thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner");
 												}
 												break;
 										}						
@@ -693,7 +693,7 @@ var tool_generateBase = {
 											case 7:
 												//Nothing
 												if (!Game.flags[thisRoom.name + "storageMiner"]) {
-													thisRoom.createFlag(Game.flags[thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner"]);
+													thisRoom.createFlag(thisCursor[0] + x, thisCursor[1] + y, thisRoom.name + "storageMiner");
 												}
 												break;
 											case 9:
