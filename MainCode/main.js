@@ -1078,14 +1078,14 @@ module.exports.loop = function() {
                     //Update pointer
                     let xPointer = Memory.observationPointers[thisRoom.name][0]
                     let yPointer = Memory.observationPointers[thisRoom.name][1]
-                    if (xPointer >= 5) {
-                        if (yPointer >= 5) {
-                            yPointer = -5
+                    if (xPointer >= 3) {
+                        if (yPointer >= 3) {
+                            yPointer = -3
                         } else {
                             yPointer += 1;
                         }
 
-                        xPointer = -5;
+                        xPointer = -3;
                     } else {
                         xPointer += 1;
                     }
@@ -1098,7 +1098,7 @@ module.exports.loop = function() {
                 //Ideal - observe all rooms in a 3x3 square
                     //Ignore objects if room is controlled by someone else
                 if (!Memory.observationPointers[thisRoom.name]) {
-                    Memory.observationPointers[thisRoom.name] = [-5, -5, getRoomAtOffset(-5, -5, thisRoom.name)]
+                    Memory.observationPointers[thisRoom.name] = [-3, -3, getRoomAtOffset(-3, -3, thisRoom.name)]
                 }
 
                 if (Game.time % 2 == 0 && Memory.observationPointers[thisRoom.name] && Memory.observerList[thisRoom.name].length >= 1) {
