@@ -1,5 +1,14 @@
 var spawn_BuildInstruction = {
     run: function(spawn, instruction, params, energyIndex, thisRoom = '', params2 = '') {
+        //Ensure that you aren't deploying onto the supplier spot
+        let buildDirections = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        //Determine if this spawn is next to the supply flag, and if so, restrict spawn directions
+        if (Game.flags[spawn.room.name + "Supply"] && Game.flags[spawn.room.name + "Supply"].pos.isNearTo(spawn)) {
+            let targetDir =  spawn.pos.getDirectionTo(Game.flags[spawn.room.name + "Supply"]);
+            //Remove direction from buildDirections, add it to supplierDirection
+            buildDirections.splice(buildDirections.indexOf(targetDir), 1);
+        }
+
         switch (instruction) {
             case 'claim':
                 var claimers = _.filter(Game.creeps, (creep) => creep.memory.priority == 'claimer' && creep.memory.homeRoom == spawn.room.name);
@@ -17,7 +26,8 @@ var spawn_BuildInstruction = {
                                         destination: params,
                                         homeRoom: spawn.room.name,
                                         path: creepPath
-                                    }
+                                    },
+                                    directions: buildDirections
                                 });
                                 Memory.isSpawning = true;
                                 console.log('Claim executed from ' + spawn.room.name);
@@ -35,7 +45,8 @@ var spawn_BuildInstruction = {
                                     priority: 'claimer',
                                     homeRoom: spawn.room.name,
                                     destination: params
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('Claim executed from ' + spawn.room.name);
@@ -56,7 +67,8 @@ var spawn_BuildInstruction = {
                             memory: {
                                 priority: 'vandal',
                                 message: "Wew Lad"
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Vandalize executed from ' + spawn.room.name);
@@ -65,7 +77,7 @@ var spawn_BuildInstruction = {
                 break;
             case 'helper':
                 var helpers = _.filter(Game.creeps, (creep) => creep.memory.priority == 'helper' && creep.memory.homeRoom == spawn.room.name);
-                if (helpers.length < 3) {
+                if (helpers.length < 4) {
                     var helperConfig = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY];
                     if (spawn.room.energyCapacityAvailable >= 2000) {
                         helperConfig = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
@@ -82,7 +94,8 @@ var spawn_BuildInstruction = {
                                     path: creepPath,
                                     homeRoom: spawn.room.name,
                                     previousPriority: 'helper'
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('Helper executed from ' + spawn.room.name);
@@ -96,7 +109,8 @@ var spawn_BuildInstruction = {
                                     destination: params,
                                     homeRoom: spawn.room.name,
                                     previousPriority: 'helper'
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('Helper executed from ' + spawn.room.name);
@@ -117,7 +131,8 @@ var spawn_BuildInstruction = {
                                 priority: 'looter',
                                 destination: params,
                                 homeRoom: spawn.room.name
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Looter executed from ' + spawn.room.name);
@@ -151,7 +166,8 @@ var spawn_BuildInstruction = {
                                         isReserved: true,
                                         deathWarn: _.size(attackerConfig) * 6,
                                         isGrouped: true
-                                    }
+                                    },
+                                    directions: buildDirections
                                 });
                                 Memory.isSpawning = true;
                                 console.log('CRACKATOA ' + spawn.room.name);
@@ -168,7 +184,8 @@ var spawn_BuildInstruction = {
                                     isReserved: true,
                                     deathWarn: _.size(attackerConfig) * 6,
                                     isGrouped: true
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('CRACKATOA ' + spawn.room.name);
@@ -205,7 +222,8 @@ var spawn_BuildInstruction = {
                                         isReserved: false,
                                         deathWarn: _.size(attackerConfig) * 6,
                                         isGrouped: false
-                                    }
+                                    },
+                                    directions: buildDirections
                                 });
                                 Memory.isSpawning = true;
                                 console.log('FUCK. SHIT. UP. ' + spawn.room.name);
@@ -232,7 +250,8 @@ var spawn_BuildInstruction = {
                                     isReserved: false,
                                     deathWarn: _.size(attackerConfig) * 6,
                                     isGrouped: false
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('FUCK. SHIT. UP. ' + spawn.room.name);
@@ -271,7 +290,8 @@ var spawn_BuildInstruction = {
                                     homeRoom: spawn.room.name,
                                     deathWarn: _.size(healerConfig) * 6,
                                     attackerID: attackerID
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             healerlessAttackers[0].memory.isReserved = true;
@@ -313,7 +333,8 @@ var spawn_BuildInstruction = {
                                         deathWarn: _.size(rangerConfig) * 6,
                                         flagName: instruction,
                                         homeRoom: spawn.room.name
-                                    }
+                                    },
+                                    directions: buildDirections
                                 });
                                 Memory.isSpawning = true;
                                 console.log('Ranger ' + spawn.room.name);
@@ -329,7 +350,8 @@ var spawn_BuildInstruction = {
                                     deathWarn: _.size(rangerConfig) * 6,
                                     flagName: instruction,
                                     homeRoom: spawn.room.name
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('Ranger ' + spawn.room.name);
@@ -351,7 +373,8 @@ var spawn_BuildInstruction = {
                                 destination: params,
                                 homeRoom: spawn.room.name,
                                 deathWarn: _.size(powerAttackConfig) * 4
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Power Mining - Attacker, ' + spawn.room.name);
@@ -371,7 +394,8 @@ var spawn_BuildInstruction = {
                                     homeRoom: spawn.room.name,
                                     attackerID: attackerID,
                                     deathWarn: _.size(healerConfig) * 4
-                                }
+                                },
+                                directions: buildDirections
                             });
                             Memory.isSpawning = true;
                             console.log('Power Mining - Healer, ' + spawn.room.name);
@@ -392,7 +416,8 @@ var spawn_BuildInstruction = {
                                 destination: params,
                                 homeRoom: spawn.room.name,
                                 deathWarn: _.size(powerCollectConfig) * 4
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Power Mining - Mule, ' + spawn.room.name);
@@ -412,7 +437,8 @@ var spawn_BuildInstruction = {
                                 destination: params,
                                 homeRoom: spawn.room.name,
                                 deathWarn: _.size(energySupplierConfig) * 4
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Distant Supplier, ' + spawn.room.name);
@@ -431,7 +457,8 @@ var spawn_BuildInstruction = {
                                 priority: 'farScout',
                                 homeRoom: spawn.room.name,
                                 deathWarn: _.size(mConfig) * 4
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         if (Game.flags[spawn.room.name + "MineScout"]) {
@@ -456,7 +483,8 @@ var spawn_BuildInstruction = {
                                 destination: params,
                                 resourceName: params2,
                                 deathWarn: _.size(mConfig) * 4
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Score Runner, ' + spawn.room.name);
@@ -476,7 +504,8 @@ var spawn_BuildInstruction = {
                                 homeRoom: spawn.room.name,
                                 destination: params,
                                 deathWarn: _.size(mConfig) * 4
-                            }
+                            },
+                            directions: buildDirections
                         });
                         Memory.isSpawning = true;
                         console.log('Score Blocker, ' + spawn.room.name);

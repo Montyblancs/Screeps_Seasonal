@@ -51,8 +51,10 @@ var creep_claimer = {
                     ignoreRoads: true,
                     offRoad: true
                 });
-            } else if (creep.claimController(creep.room.controller) == OK) {
+            } else {
                 Memory.claimSpawn = false;
+                creep.room.createFlag(24, 24, creep.memory.homeRoom + "SendHelper")
+                creep.room.createFlag(26, 26, "GenerateBase")
                 creep.suicide();
             }
         }
