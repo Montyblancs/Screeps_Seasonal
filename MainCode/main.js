@@ -1811,6 +1811,7 @@ function memCheck() {
     if (!Memory.decoderIndex) {
         Memory.decoderIndex = new Object();
     }
+    Memory.decoderIndex[RESOURCE_SYMBOL_RES] = "W12N4";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();

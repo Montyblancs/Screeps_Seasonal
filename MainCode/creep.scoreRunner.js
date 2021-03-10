@@ -3,38 +3,27 @@ var creep_scoreRunner = {
     /** @param {Creep} creep **/
     run: function(creep) {
         if (creep.room.name != creep.memory.homeRoom && creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
-        	if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
-                //Don't waste time
-                creep.suicide();
-            }
-            if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
-                creep.travelTo(Game.rooms[creep.memory.homeRoom].storage, {
-                    preferHighway: true
-                });
+        	if ((creep.room.name == "W10N10" || creep.room.name == "W11N10") && creep.pos.y >= 25) {
+        		creep.travelTo(new RoomPosition(25, 25, "W12N10"));
+        	} else if (creep.room.name == "W12N10" && creep.pos.y >= 22) {
+        		creep.travelTo(new RoomPosition(25, 25, "W11N11"))
+        	} else if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
+                creep.travelTo(Game.rooms[creep.memory.homeRoom].storage);
             } else {
-                creep.travelTo(new RoomPosition(25, 25, creep.memory.homeRoom), {
-                    preferHighway: true
-                });
+                creep.travelTo(new RoomPosition(25, 25, creep.memory.homeRoom));
             }
-        } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {   
-            if (Memory.scoreTarget[creep.memory.homeRoom]) {
-                creep.travelTo(new RoomPosition(25, 25, Memory.scoreTarget[creep.memory.homeRoom]), {
-                    preferHighway: true
-                });
-            } else {
-                creep.travelTo(new RoomPosition(25, 25, creep.memory.destination), {
-                    preferHighway: true
-                });
-            }
-
-            if (!creep.memory.travelDistance && creep.memory._trav && creep.memory._trav.path) {
-                creep.memory.travelDistance = creep.memory._trav.path.length;
-                creep.memory.deathWarn = (creep.memory.travelDistance + _.size(creep.body) * 3) + 15;
-            }     
+        } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {
+        	if (creep.room.name == "W10N10" || creep.room.name == "W11N10") {
+        		creep.travelTo(new RoomPosition(25, 25, "W12N10"));
+        	} else if (creep.room.name == "W12N10") {
+        		creep.travelTo(new RoomPosition(25, 25, "W12N9"))
+        	} else {
+        		creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
+        	}      	  
         } else {
             if (creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
                 //In homeroom, get score
-                if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
+                if (creep.ticksToLive <= 250) {
                     //Don't waste score
                     creep.suicide();
                 }
@@ -87,7 +76,7 @@ function evadeAttacker(creep, evadeRange, roadIgnore) {
     let didRanged = false;
 
     Foe = creep.pos.findInRange(FIND_HOSTILE_CREEPS, evadeRange, {
-        filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0) && eCreep.owner.username != 'Saruss')
+        filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0) && !Memory.grayList.includes(eCreep.owner.username))
     });
 
     if (Foe.length) {
@@ -96,7 +85,7 @@ function evadeAttacker(creep, evadeRange, roadIgnore) {
         }
         creep.memory.evadingUntil = Game.time + 5;
         closeFoe = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-            filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0) && eCreep.owner.username != 'Saruss')
+            filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0) && !Memory.grayList.includes(eCreep.owner.username))
         });
 
         creep.travelTo(closeFoe, {
