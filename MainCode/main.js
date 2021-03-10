@@ -1260,6 +1260,12 @@ module.exports.loop = function() {
                             if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= storageTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= storageTotal)) {
                                 spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
                                 break;
+                            } else if ((!Game.rooms[Memory.decoderIndex[decoderKey2]] || Game.rooms[Memory.decoderIndex[decoderKey2]].controller.owner.username != "Montblanc")) {
+                                //Determine if this is a foreign room, if so, lower limits.
+                                if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= 5000) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= 5000)) {
+                                    spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
+                                    break;
+                                }
                             }
                         }
                     }
