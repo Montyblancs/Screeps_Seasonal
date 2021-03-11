@@ -49,8 +49,8 @@ var spawn_BuildCreeps = {
 
         if (strSources.length == 1) {
             harvesterMax = 1;
-            builderMax = 1;
-            upgraderMax = 1;
+            builderMax = builderMax / 2;
+            upgraderMax = builderMax / 2;
         }
 
         //For Level 4

@@ -437,6 +437,11 @@ var spawn_BuildCreeps5 = {
             repairMax = 0;
         }
 
+        //Returns [upgraderMax, upgraderConfig]
+        let upgraderResults = GetUpgraderConfig(upgraderMax, thisRoom.energyCapacityAvailable, thisRoom.controller.level)
+        upgraderMax = upgraderResults[0]
+        let upgraderConfig = upgraderResults[1]
+
         let bareMinConfig = [MOVE, WORK, WORK, CARRY];
 
         let buildDirections = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
@@ -823,18 +828,7 @@ var spawn_BuildCreeps5 = {
                         Memory.creepInQue.push(thisRoom.name, prioritizedRole, jobSpecificPri, spawn.name);
                     }
                 } else if (prioritizedRole == 'upgrader') {
-                    Memory.isSpawning = true;
-                    let upgraderConfig = [CARRY, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE];
-                    if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 265000 && thisRoom.energyCapacityAvailable >= 2300 && thisRoom.controller.level != 8) {
-                        upgraderConfig = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
-                    } else if (thisRoom.energyCapacityAvailable >= 1550) {
-                        if (thisRoom.controller.level == 8) {
-                            upgraderConfig = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY];
-                        } else {
-                            upgraderConfig = [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY];
-                        }
-                    }
-
+                    Memory.isSpawning = true;    
                     let configCost = calculateConfigCost(upgraderConfig);
                     if (configCost > thisRoom.energyCapacityAvailable) {
                         //Took severe damage, assume cap of 300
@@ -1201,6 +1195,38 @@ function calculateConfigCost(bodyConfig) {
         totalCost = totalCost + BODYPART_COST[thisPart];
     }
     return totalCost;
+}
+
+function GetUpgraderConfig(upgraderMax, energyCap, cLevel) {
+	if (energyCap >= 1550 && cLevel >= 8) {
+		return [1, [MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY]]
+	}
+
+	if (energyCap < (BODYPART_COST[MOVE] *3) + BODYPART_COST[CARRY] + (BODYPART_COST[WORK] * 12)) {
+		return [1, [MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY]]
+	}
+
+	//1 Standard upgrader - 12 WORK
+	let thisConfig = [MOVE,MOVE,MOVE,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY];
+    let configCost = (BODYPART_COST[WORK] * 12) + (BODYPART_COST[MOVE] * 3);
+    energyCap = energyCap - ((BODYPART_COST[MOVE] *3) + BODYPART_COST[CARRY] + (BODYPART_COST[WORK] * 12));
+
+    let configLength = 16;
+    while ((energyCap / configCost) >= 1 && configLength < 46 && upgraderMax > 0) {
+        thisConfig.push(WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK);
+        thisConfig.push(MOVE,MOVE,MOVE);
+        energyCap = energyCap - configCost
+        configLength += 15
+        upgraderMax -= 1;
+    }
+
+    thisConfig.sort();
+
+    if (upgraderMax == 0) {
+    	upgraderMax = 1;
+    }
+
+    return [upgraderMax, thisConfig];
 }
 
 module.exports = spawn_BuildCreeps5;

@@ -9,8 +9,10 @@ var creep_scoreRunner = {
             }
 
         	if ((creep.room.name == "W10N10" || creep.room.name == "W11N10") && creep.pos.y >= 25) {
-        		creep.travelTo(new RoomPosition(25, 25, "W12N10"));
-        	} else if (creep.room.name == "W12N10" && creep.pos.y >= 22) {
+        		creep.travelTo(new RoomPosition(24, 32, "W12N10"));
+        	} else if (creep.room.name == "W12N10" && creep.pos.y > 22) {
+        		creep.travelTo(new RoomPosition(25, 22, "W12N10"))
+        	} else if (creep.room.name == "W12N10" && creep.pos.y <= 22) {
         		creep.travelTo(new RoomPosition(25, 25, "W11N11"))
         	} else if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
                 creep.travelTo(Game.rooms[creep.memory.homeRoom].storage);
@@ -20,14 +22,14 @@ var creep_scoreRunner = {
         } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {
         	if (creep.room.name == "W10N10" || creep.room.name == "W11N10") {
         		creep.travelTo(new RoomPosition(25, 20, "W12N10"));
-        	} else if (creep.room.name == "W12N10" && creep.pos.y <= 20) {
+        	} else if (creep.room.name == "W12N10" && creep.pos.y < 20) {
         		creep.travelTo(new RoomPosition(25, 20, "W12N10"))
         	} else {
         		creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
         	}
 
         	if (!creep.memory.travelDistance && creep.memory._trav && creep.memory._trav.path) {
-        		creep.memory.travelDistance = creep.memory._trav.path.length + 50
+        		creep.memory.travelDistance = creep.memory._trav.path.length + 100
         		creep.memory.deathWarn = (creep.memory.travelDistance + _.size(creep.body) * 3) + 15;
         	}      	  
         } else {
