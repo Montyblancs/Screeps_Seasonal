@@ -89,7 +89,21 @@ var spawn_BuildCreeps = {
             defenderEnergyLim = 1170;
         }
 
-        if (Memory.roomsUnderAttack.indexOf(thisRoom.name) != -1 && Memory.roomsPrepSalvager.indexOf(thisRoom.name) == -1 && thisRoom.energyAvailable >= defenderEnergyLim && defenders.length < 2 && harvesters.length >= harvesterMax) {
+        if (RoomCreeps.length == 0 && spawn.canCreateCreep(bareMinConfig) == OK) {
+        	let configCost = calculateConfigCost(bareMinConfig);
+        	if (configCost <= Memory.CurrentRoomEnergy[energyIndex]) {
+        		Memory.CurrentRoomEnergy[energyIndex] = Memory.CurrentRoomEnergy[energyIndex] - configCost;
+        		spawn.spawnCreep(bareMinConfig, 'harvester_' + spawn.name + "_" + Game.time, {
+        			memory: {
+        				priority: 'harvester',
+        				sourceLocation: strSources[0],
+        				homeRoom: thisRoom.name
+        			}
+        		});
+        	}
+
+        	Memory.isSpawning = true;
+        } else if (Memory.roomsUnderAttack.indexOf(thisRoom.name) != -1 && Memory.roomsPrepSalvager.indexOf(thisRoom.name) == -1 && thisRoom.energyAvailable >= defenderEnergyLim && defenders.length < 2 && harvesters.length >= harvesterMax) {
             //Try to produce millitary units
             var ToughCount = 0;
             var MoveCount = 0;
