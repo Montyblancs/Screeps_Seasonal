@@ -22,7 +22,6 @@ var spawn_BuildCreeps = {
 
         let strSources = Memory.sourceList[thisRoom.name];
         let assignedSlot1 = _.filter(RoomCreeps, (creep) => creep.memory.sourceLocation == strSources[0] && creep.memory.priority == 'harvester');
-        let assignedSlot2 = _.filter(RoomCreeps, (creep) => creep.memory.sourceLocation == strSources[0] && creep.memory.priority == 'harvester');
 
         let bareMinConfig = [MOVE, WORK, WORK, CARRY];
 
@@ -90,22 +89,7 @@ var spawn_BuildCreeps = {
             defenderEnergyLim = 1170;
         }
 
-        if (RoomCreeps.length == 0 && spawn.canCreateCreep(bareMinConfig) == OK) {
-            //In case of complete destruction, make a minimum viable worker
-            let configCost = calculateConfigCost(bareMinConfig);
-            if (configCost <= Memory.CurrentRoomEnergy[energyIndex]) {
-                Memory.CurrentRoomEnergy[energyIndex] = Memory.CurrentRoomEnergy[energyIndex] - configCost;
-                spawn.spawnCreep(bareMinConfig, 'harvester_' + spawn.name + '_' + Game.time, {
-                    memory: {
-                        priority: 'harvester',
-                        sourceLocation: strSources[0],
-                        homeRoom: thisRoom.name
-                    }
-                });
-            }
-
-            Memory.isSpawning = true;
-        } else if (Memory.roomsUnderAttack.indexOf(thisRoom.name) != -1 && Memory.roomsPrepSalvager.indexOf(thisRoom.name) == -1 && thisRoom.energyAvailable >= defenderEnergyLim && defenders.length < 2 && harvesters.length >= harvesterMax) {
+        if (Memory.roomsUnderAttack.indexOf(thisRoom.name) != -1 && Memory.roomsPrepSalvager.indexOf(thisRoom.name) == -1 && thisRoom.energyAvailable >= defenderEnergyLim && defenders.length < 2 && harvesters.length >= harvesterMax) {
             //Try to produce millitary units
             var ToughCount = 0;
             var MoveCount = 0;
@@ -196,7 +180,7 @@ var spawn_BuildCreeps = {
                 bestWorker = [MOVE, CARRY, CARRY];
             } else if (upgraders.length < upgraderMax) {
                 prioritizedRole = 'upgrader';
-            } else if (scrapers.length < scraperMax) {
+            } else if (scrapers.length < scraperMax && thisRoom.energyCapacityAvailable >= 900) {
                 prioritizedRole = 'scraper';
                 bestWorker = [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
             } else if (builders.length < builderMax) {
@@ -204,6 +188,8 @@ var spawn_BuildCreeps = {
             } else if (repairers.length < repairMax) {
                 prioritizedRole = 'repair';
             }
+            
+            console.log(prioritizedRole)
 
             let configCost = calculateConfigCost(bestWorker);
             if (configCost <= Memory.CurrentRoomEnergy[energyIndex]) {
@@ -245,7 +231,7 @@ function calculateConfigCost(bodyConfig) {
 }
 
 function getMinerConfig(energyCap, numRoomCreeps, numHarvesters) {
-    if (energyCap < 550 || numRoomCreeps <= 1 || numHarvesters <= 0) {
+    if (energyCap < 550) {
         return [MOVE, WORK, WORK, CARRY];
     } else if (energyCap < 700) {
         return [MOVE, MOVE, WORK, WORK, WORK, WORK, CARRY];

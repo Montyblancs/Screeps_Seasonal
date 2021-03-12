@@ -193,10 +193,10 @@ var tool_generateBase = {
 				}
 	        }
 
-	        console.log('Best location determined.')
+	        /*console.log('Best location determined.')
 	        console.log(bestCenterCoords[0] + ',' + bestCenterCoords[1]);
 	        console.log('Direction ' + bestDirection);
-	        console.log('Most Space ' + bestFreeSpace);
+	        console.log('Most Space ' + bestFreeSpace);*/
 
 	        if (!Memory.genBestDirection[thisRoom.name]) { 
 	        	Memory.genBestDirection[thisRoom.name] = bestDirection;
