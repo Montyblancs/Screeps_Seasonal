@@ -1799,7 +1799,7 @@ function recalculateBestWorker(thisEnergyCap) {
         EnergyRemaining = 250;
     }
     bestWorkerConfig = [];
-    while ((EnergyRemaining / 250) >= 1 || bestWorkerConfig.length >= 21) {
+    while ((EnergyRemaining / 250) >= 1 || bestWorkerConfig.length >= 40) {
         bestWorkerConfig.push(MOVE, MOVE, CARRY, WORK);
         if (bestWorkerConfig.length > 21) {
             while (bestWorkerConfig.length > 21) {
@@ -1818,6 +1818,7 @@ function memCheck() {
         Memory.decoderIndex = new Object();
     }
     Memory.decoderIndex[RESOURCE_SYMBOL_RES] = "W12N4";
+    Memory.decoderIndex[RESOURCE_SYMBOL_HE] = "W19N1";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();

@@ -2,13 +2,14 @@ var creep_scoreRunner = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        let southWallRooms = ["W20N10", "W19N10", "W18N10", "W17N10", "W16N10", "W15N10", "W14N10", "W13N10", "W11N10", "W10N10"]
         if (creep.room.name != creep.memory.homeRoom && creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
         	if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
                 //Don't waste time
                 creep.suicide();
             }
 
-        	if ((creep.room.name == "W10N10" || creep.room.name == "W11N10") && creep.pos.y >= 25) {
+        	if (southWallRooms.includes(creep.room.name) && creep.pos.y >= 25) {
         		creep.travelTo(new RoomPosition(24, 32, "W12N10"));
         	} else if (creep.room.name == "W12N10" && creep.pos.y > 22) {
         		creep.travelTo(new RoomPosition(25, 22, "W12N10"))
@@ -20,7 +21,7 @@ var creep_scoreRunner = {
                 creep.travelTo(new RoomPosition(25, 25, creep.memory.homeRoom));
             }
         } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {
-        	if (creep.room.name == "W10N10" || creep.room.name == "W11N10") {
+        	if (southWallRooms.includes(creep.room.name)) {
         		creep.travelTo(new RoomPosition(25, 20, "W12N10"));
         	} else if (creep.room.name == "W12N10" && creep.pos.y < 20) {
         		creep.travelTo(new RoomPosition(25, 20, "W12N10"))
@@ -48,9 +49,15 @@ var creep_scoreRunner = {
                 }
 
                 if (withdrawResult == ERR_NOT_IN_RANGE) {
-                    creep.travelTo(creep.room.storage, {
-                        maxRooms: 1
-                    });
+                    if (creep.room.storage && creep.room.storage.store[creep.memory.resourceName]) {
+                        creep.travelTo(creep.room.storage, {
+                            maxRooms: 1
+                        });
+                    } else {
+                        creep.travelTo(creep.room.terminal, {
+                            maxRooms: 1
+                        });
+                    }                  
                 } else if (withdrawResult == OK) {
                     if (creep.memory.destination == creep.room.name) {
                         //go right to decoder
