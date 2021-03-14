@@ -1150,8 +1150,74 @@ module.exports.loop = function() {
                 //}
 
                 //Parse room event log, check for foreign deposits/transfers
-                //let foreignLogs = _.filter(thisRoom.getEventLog(), (eLog) => eLog.event == EVENT_TRANSFER && Game.getObjectById(eLog.objectId) && Game.getObjectById(eLog.objectId).owner.username != "Montblanc")
-                //IDs in logs are always null?
+                let foreignLogs = _.filter(thisRoom.getEventLog(), (eLog) => eLog.event == EVENT_TRANSFER && eLog.data.resourceType != RESOURCE_ENERGY)
+                for (let thisEvent of foreignLogs) {
+                    let srcObj = Game.getObjectById(thisEvent.objectId)
+                    let targetObject = Game.getObjectById(thisEvent.data.targetId)
+
+                    //&& Game.getObjectById(eLog.objectId) && Game.getObjectById(eLog.objectId).owner.username != "Montblanc"
+
+                    //assumed withdrawl
+                    let dropoff
+                    let eventCreep
+                    let creepId
+
+                    //Deposit
+                    if (targetObject == thisRoom.terminal || targetObject == thisRoom.storage) {
+                        dropoff = true;
+                        eventCreep = srcObj
+                        creepId = thisEvent.objectId
+                    } else if (srcObj == thisRoom.terminal || srcObj == thisRoom.storage) {
+                        //Withdrawl
+                        dropoff = false;
+                        eventCreep = targetObject
+                        creepId = thisEvent.data.targetId
+                    } else {
+                        continue;
+                    }
+
+                    //Verify this isn't me
+                    if (eventCreep && eventCreep.owner.username == "Montblanc") {
+                        continue;
+                    }
+
+                    //Check if dead
+                    if (!eventCreep) {
+                        for (let thisTomb of thisRoom.find(FIND_TOMBSTONES)) {
+                            if (thisTomb.creep.id == creepId) {
+                                eventCreep = thisTomb.creep;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!eventCreep) {
+                        //idk lol
+                        continue;
+                    }
+
+                    let thisName = eventCreep.owner.username;
+
+                    if (!Memory.transferLog[thisName]) {
+                        Memory.transferLog[thisName] = new Object();
+                    }
+                    if (!Memory.transferLog[thisName][thisEvent.data.resourceType]) {
+                        Memory.transferLog[thisName][thisEvent.data.resourceType] = 0;
+                    }
+                    Memory.transferLog[thisName][thisEvent.data.resourceType] += (dropoff ? 1 : -1) * thisEvent.data.amount;
+
+                    if (dropoff) {
+                        if (!Memory.transferNeed[thisEvent.data.resourceType]) {
+                            Memory.transferNeed[thisEvent.data.resourceType] = 0;
+                        }
+                        Memory.transferNeed[thisEvent.data.resourceType] += thisEvent.data.amount;
+                    }
+
+                    //Todo
+                    //Make market code send depositied resource to closest room as top priority
+                    //prevent ScoreRunner from spawning by subtracting reserved resource from check
+                    //Also apply subtraction inside ScoreRunner module
+                }
             }
 
             if (Memory.isSpawning == null) {
@@ -1264,12 +1330,26 @@ module.exports.loop = function() {
                     }
                     for (const decoderKey2 in Memory.decoderIndex) {
                         if (Memory.decoderSource[decoderKey2] && Memory.decoderSource[decoderKey2] == thisRoom.name) {
-                            if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= storageTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= storageTotal)) {
+
+                            let modifiedTotal = storageTotal
+                            if (Memory.transferLog.length) {
+                               for (let thisUser of Memory.transferLog) {
+                                    if (thisUser[decoderKey2]) {
+                                        modifiedTotal -= thisUser[decoderKey2];
+                                    }
+                                } 
+                            }                    
+
+                            if (modifiedTotal <= 0) {
+                                continue;
+                            }
+
+                            if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= modifiedTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= modifiedTotal)) {
                                 spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
                                 break;
                             } else if ((!Game.rooms[Memory.decoderIndex[decoderKey2]] || Game.rooms[Memory.decoderIndex[decoderKey2]].controller.owner.username != "Montblanc")) {
                                 //Determine if this is a foreign room, if so, lower limits.
-                                if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= 5000) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= 5000)) {
+                                if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= modifiedTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= modifiedTotal)) {
                                     spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
                                     break;
                                 }
@@ -1826,9 +1906,18 @@ function memCheck() {
     }
     Memory.decoderIndex[RESOURCE_SYMBOL_RES] = "W12N4";
     Memory.decoderIndex[RESOURCE_SYMBOL_HE] = "W19N1";
+    Memory.decoderIndex[RESOURCE_SYMBOL_SAMEKH] = "W12N9";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();
+    }
+
+    if (!Memory.transferLog) {
+        Memory.transferLog = new Object();
+    }
+
+    if (!Memory.transferNeed) {
+        Memory.transferNeed = new Object();
     }
 
     if (!Memory.RoomsRun) {

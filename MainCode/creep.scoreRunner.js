@@ -4,35 +4,35 @@ var creep_scoreRunner = {
     run: function(creep) {
         let southWallRooms = ["W20N10", "W19N10", "W18N10", "W17N10", "W16N10", "W15N10", "W14N10", "W13N10", "W11N10", "W10N10"]
         if (creep.room.name != creep.memory.homeRoom && creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
-        	if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
+            if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
                 //Don't waste time
                 creep.suicide();
             }
 
-        	if (southWallRooms.includes(creep.room.name) && creep.pos.y >= 25) {
-        		creep.travelTo(new RoomPosition(24, 32, "W12N10"));
-        	} else if (creep.room.name == "W12N10" && creep.pos.y > 22) {
-        		creep.travelTo(new RoomPosition(25, 22, "W12N10"))
-        	} else if (creep.room.name == "W12N10" && creep.pos.y <= 22) {
-        		creep.travelTo(new RoomPosition(25, 25, "W11N11"))
-        	} else if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
+            if (southWallRooms.includes(creep.room.name) && creep.pos.y >= 25) {
+                creep.travelTo(new RoomPosition(24, 32, "W12N10"));
+            } else if (creep.room.name == "W12N10" && creep.pos.y > 22) {
+                creep.travelTo(new RoomPosition(25, 22, "W12N10"))
+            } else if (creep.room.name == "W12N10" && creep.pos.y <= 22) {
+                creep.travelTo(new RoomPosition(25, 25, "W11N11"))
+            } else if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
                 creep.travelTo(Game.rooms[creep.memory.homeRoom].storage);
             } else {
                 creep.travelTo(new RoomPosition(25, 25, creep.memory.homeRoom));
             }
         } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {
-        	if (southWallRooms.includes(creep.room.name)) {
-        		creep.travelTo(new RoomPosition(25, 20, "W12N10"));
-        	} else if (creep.room.name == "W12N10" && creep.pos.y < 20) {
-        		creep.travelTo(new RoomPosition(25, 20, "W12N10"))
-        	} else {
-        		creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
-        	}
+            if (southWallRooms.includes(creep.room.name)) {
+                creep.travelTo(new RoomPosition(25, 22, "W12N10"));
+            } else if (creep.room.name == "W12N10" && creep.pos.y < 23) {
+                creep.travelTo(new RoomPosition(25, 24, "W12N10"))
+            } else {
+                creep.travelTo(new RoomPosition(25, 25, creep.memory.destination));
+            }
 
-        	if (!creep.memory.travelDistance && creep.memory._trav && creep.memory._trav.path) {
-        		creep.memory.travelDistance = creep.memory._trav.path.length + 100
-        		creep.memory.deathWarn = (creep.memory.travelDistance + _.size(creep.body) * 3) + 15;
-        	}      	  
+            if (!creep.memory.travelDistance && creep.memory._trav && creep.memory._trav.path) {
+                creep.memory.travelDistance = creep.memory._trav.path.length + 100
+                creep.memory.deathWarn = (creep.memory.travelDistance + _.size(creep.body) * 3) + 15;
+            }         
         } else {
             if (creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
                 //In homeroom, get score
@@ -42,10 +42,26 @@ var creep_scoreRunner = {
                 }
 
                 let withdrawResult = undefined;
+                let withdrawAmount = creep.store.getFreeCapacity();
+
                 if (creep.room.storage && creep.room.storage.store[creep.memory.resourceName]) {
-                    withdrawResult = creep.withdraw(creep.room.storage, creep.memory.resourceName)               
+                    if (Memory.transferLog.length) {
+                        for (let thisUser of Memory.transferLog) {
+                            if (thisUser[creep.memory.resourceName] && withdrawAmount > (creep.stoom.storage.store[creep.memory.resourceName] - thisUser[creep.memory.resourceName])) {
+                                withdrawAmount = creep.store.getFreeCapacity() - thisUser[creep.memory.resourceName]
+                            }
+                        }
+                    }                   
+                    withdrawResult = creep.withdraw(creep.room.storage, creep.memory.resourceName, withdrawAmount)               
                 } else if (creep.room.terminal && creep.room.terminal.store[creep.memory.resourceName]) {
-                    withdrawResult = creep.withdraw(creep.room.terminal, creep.memory.resourceName)               
+                    if (Memory.transferLog.length) {
+                        for (let thisUser of Memory.transferLog) {
+                            if (thisUser[creep.memory.resourceName] && withdrawAmount > (creep.stoom.terminal.store[creep.memory.resourceName] - thisUser[creep.memory.resourceName])) {
+                                withdrawAmount = creep.store.getFreeCapacity() - thisUser[creep.memory.resourceName]
+                            }
+                        }
+                    }                    
+                    withdrawResult = creep.withdraw(creep.room.terminal, creep.memory.resourceName, withdrawAmount)               
                 }
 
                 if (withdrawResult == ERR_NOT_IN_RANGE) {
@@ -112,7 +128,7 @@ function evadeAttacker(creep, evadeRange, roadIgnore) {
             range: 8
         }, true);
     } else if (creep.memory.evadingUntil && creep.memory.evadingUntil > Game.time) {
-    	creep.travelTo(new RoomPosition(25, 25, creep.room.name));
+        creep.travelTo(new RoomPosition(25, 25, creep.room.name));
     }
 }
 
