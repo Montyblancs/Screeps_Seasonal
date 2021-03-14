@@ -46,12 +46,6 @@ var spawn_BuildCreeps = {
             upgraderMax = upgraderMax * 2
         }
 
-        if (strSources.length == 1) {
-            harvesterMax = 1;
-            builderMax = builderMax / 2;
-            upgraderMax = builderMax / 2;
-        }
-
         //For Level 4
         if (thisRoom.storage) {
         	if (thisRoom.storage.store[RESOURCE_ENERGY] <= 1000) {
@@ -76,6 +70,14 @@ var spawn_BuildCreeps = {
             if (thisRoom.storage.store[RESOURCE_ENERGY] >= 50000) {
                 upgraderMax += 2;
             }
+        }
+
+        if (strSources.length == 1) {
+            harvesterMax = 1;
+            if (!thisRoom.storage || thisRoom.storage.store < 50000) {
+            	builderMax = builderMax / 2;
+            	upgraderMax = builderMax / 2;
+            }            
         }
 
         if (Game.flags[thisRoom.name + "upFocus"]) {

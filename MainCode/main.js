@@ -1052,27 +1052,30 @@ module.exports.loop = function() {
                             }
                         }*/
 
-                        //Search observed room for score container
-                        if (!Game.flags[thisRoom.name + "Loot"] && thisRoom.name != Memory.observationPointers[thisRoom.name][2]) {
-                            let roomRef = Game.rooms[Memory.observationPointers[thisRoom.name][2]]
-                            if (!roomRef.controller || (!roomRef.controller.owner && (!roomRef.controller.reservation || roomRef.controller.reservation.username != 'Montblanc')) ) {
+                        //Special case - room names 5 letters long are not my sector, skip them.
+                        if (Memory.observationPointers[thisRoom.name][2].length != 5) {
+                            //Search observed room for score container
+                            if (!Game.flags[thisRoom.name + "Loot"] && thisRoom.name != Memory.observationPointers[thisRoom.name][2]) {
+                                let roomRef = Game.rooms[Memory.observationPointers[thisRoom.name][2]]
+                                if (!roomRef.controller || (!roomRef.controller.owner && (!roomRef.controller.reservation || roomRef.controller.reservation.username != 'Montblanc')) ) {
+                                    let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SYMBOL_CONTAINERS, {
+                                        filter: (thisScore) => (_.sum(thisScore.store) > 0)
+                                    });
+                                    if (scoreContainer.length && thisRoom.storage && (!thisRoom.storage.store[scoreContainer[0].resourceType] || thisRoom.storage.store[scoreContainer[0].resourceType] < 30000)) {
+                                        Game.rooms[Memory.observationPointers[thisRoom.name][2]].createFlag(scoreContainer[0].pos.x, scoreContainer[0].pos.y, thisRoom.name + "Loot");
+                                        console.log('Observed and created loot flag at ' + Memory.observationPointers[thisRoom.name][2])
+                                    }
+                                }             
+                            } else if (Game.flags[thisRoom.name + "Loot"] && Game.flags[thisRoom.name + "Loot"].room && Game.flags[thisRoom.name + "Loot"].room.name == Memory.observationPointers[thisRoom.name][2])  {
+                                //Determine if this is still lootable
                                 let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SYMBOL_CONTAINERS, {
                                     filter: (thisScore) => (_.sum(thisScore.store) > 0)
                                 });
-                                if (scoreContainer.length && thisRoom.storage && (!thisRoom.storage.store[scoreContainer[0].resourceType] || thisRoom.storage.store[scoreContainer[0].resourceType] < 30000)) {
-                                    Game.rooms[Memory.observationPointers[thisRoom.name][2]].createFlag(scoreContainer[0].pos.x, scoreContainer[0].pos.y, thisRoom.name + "Loot");
-                                    console.log('Observed and created loot flag at ' + Memory.observationPointers[thisRoom.name][2])
+                                if (!scoreContainer.length) {
+                                    Game.flags[thisRoom.name + "Loot"].remove();
                                 }
-                            }             
-                        } else if (Game.flags[thisRoom.name + "Loot"] && Game.flags[thisRoom.name + "Loot"].room && Game.flags[thisRoom.name + "Loot"].room.name == Memory.observationPointers[thisRoom.name][2])  {
-                            //Determine if this is still lootable
-                            let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SYMBOL_CONTAINERS, {
-                                filter: (thisScore) => (_.sum(thisScore.store) > 0)
-                            });
-                            if (!scoreContainer.length) {
-                                Game.flags[thisRoom.name + "Loot"].remove();
-                            }
-                        }                     
+                            } 
+                        }                                           
                     }
 
                     //Update pointer
@@ -1145,6 +1148,10 @@ module.exports.loop = function() {
                 //if (Game.flags[thisRoom.name + "FarGuard"]) {
                 //Memory.FarGuardNeeded[thisRoom.name] = true;
                 //}
+
+                //Parse room event log, check for foreign deposits/transfers
+                //let foreignLogs = _.filter(thisRoom.getEventLog(), (eLog) => eLog.event == EVENT_TRANSFER && Game.getObjectById(eLog.objectId) && Game.getObjectById(eLog.objectId).owner.username != "Montblanc")
+                //IDs in logs are always null?
             }
 
             if (Memory.isSpawning == null) {
