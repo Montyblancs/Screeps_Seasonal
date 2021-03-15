@@ -42,26 +42,12 @@ var creep_scoreRunner = {
                 }
 
                 let withdrawResult = undefined;
-                let withdrawAmount = creep.store.getFreeCapacity();
-
-                if (creep.room.storage && creep.room.storage.store[creep.memory.resourceName]) {
-                    if (Memory.transferLog.length) {
-                        for (let thisUser of Memory.transferLog) {
-                            if (thisUser[creep.memory.resourceName] && withdrawAmount > (creep.stoom.storage.store[creep.memory.resourceName] - thisUser[creep.memory.resourceName])) {
-                                withdrawAmount = creep.store.getFreeCapacity() - thisUser[creep.memory.resourceName]
-                            }
-                        }
-                    }                   
-                    withdrawResult = creep.withdraw(creep.room.storage, creep.memory.resourceName, withdrawAmount)               
-                } else if (creep.room.terminal && creep.room.terminal.store[creep.memory.resourceName]) {
-                    if (Memory.transferLog.length) {
-                        for (let thisUser of Memory.transferLog) {
-                            if (thisUser[creep.memory.resourceName] && withdrawAmount > (creep.stoom.terminal.store[creep.memory.resourceName] - thisUser[creep.memory.resourceName])) {
-                                withdrawAmount = creep.store.getFreeCapacity() - thisUser[creep.memory.resourceName]
-                            }
-                        }
-                    }                    
-                    withdrawResult = creep.withdraw(creep.room.terminal, creep.memory.resourceName, withdrawAmount)               
+                if (Memory.transferNeed[creep.memory.resourceName] && Memory.mineralTotals[creep.memory.resourceName] + creep.store.getCapacity() <= Memory.transferNeed[creep.memory.resourceName]) {
+                    withdrawResult = undefined
+                } else if (creep.room.storage && creep.room.storage.store[creep.memory.resourceName]) {           
+                    withdrawResult = creep.withdraw(creep.room.storage, creep.memory.resourceName)               
+                } else if (creep.room.terminal && creep.room.terminal.store[creep.memory.resourceName]) {              
+                    withdrawResult = creep.withdraw(creep.room.terminal, creep.memory.resourceName)               
                 }
 
                 if (withdrawResult == ERR_NOT_IN_RANGE) {

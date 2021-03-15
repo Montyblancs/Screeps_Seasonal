@@ -166,7 +166,7 @@ var market_buyers = {
             //Memory.needMin room name
             //resource
             var hasSent = false;
-            if (Game.time % 100 == 0) {
+            if (Game.time % 25 == 0) {
                 for (var y in Memory.mineralNeed) {
                     if (y == RESOURCE_CATALYZED_GHODIUM_ACID && thisRoom.controller.level < 8) {
                         //No
@@ -238,6 +238,10 @@ var market_buyers = {
 module.exports = market_buyers;
 
 function sendMineral(thisMineral, thisTerminal, targetRoom, saveFlag, nukerLimit) {
+	if (targetRoom == thisTerminal.room.name) {
+		//nani the fuck
+		return false;
+	}
     if (thisTerminal.store[thisMineral] && Game.rooms[targetRoom]) {
         let targetTerminal = Game.rooms[targetRoom].terminal
         let amountAvailable = thisTerminal.store[thisMineral];
@@ -259,7 +263,7 @@ function sendMineral(thisMineral, thisTerminal, targetRoom, saveFlag, nukerLimit
             amountAvailable = thisTerminal.store[thisMineral];
         }
 
-        if (amountAvailable >= 100) {
+        if (amountAvailable >= 25) {
             if (targetTerminal && !targetTerminal.store[thisMineral]) {
                 if (amountAvailable > targetStoreCap) {
                     amountAvailable = targetStoreCap
@@ -269,14 +273,11 @@ function sendMineral(thisMineral, thisTerminal, targetRoom, saveFlag, nukerLimit
                     if (thisRoomIndex != -1) {
                         Memory.mineralNeed[thisMineral].splice(thisRoomIndex, 1);
                     }
-                    if (Memory.transferNeed[thisMineral]) {
-                        Memory.transferNeed[thisMineral] - amountAvailable;
-                    }
                     return true;
                 }
             } else if (targetTerminal && targetTerminal.store[thisMineral] && targetTerminal.store[thisMineral] < targetStoreCap) {
                 let neededAmount = targetStoreCap - targetTerminal.store[thisMineral]
-                if (neededAmount < 100) {
+                if (neededAmount < 25) {
                     let thisRoomIndex = Memory.mineralNeed[thisMineral].indexOf(targetRoom);
                     if (thisRoomIndex != -1) {
                         Memory.mineralNeed[thisMineral].splice(thisRoomIndex, 1);
@@ -286,14 +287,11 @@ function sendMineral(thisMineral, thisTerminal, targetRoom, saveFlag, nukerLimit
                     if (amountAvailable < neededAmount) {
                         neededAmount = amountAvailable
                     }
-                    if (neededAmount >= 100) {
+                    if (neededAmount >= 25) {
                         if (thisTerminal.send(thisMineral, neededAmount, targetRoom, thisTerminal.room.name + " has gotchu, fam.") == OK) {
                             var thisRoomIndex = Memory.mineralNeed[thisMineral].indexOf(targetRoom);
                             if (thisRoomIndex != -1) {
                                 Memory.mineralNeed[thisMineral].splice(thisRoomIndex, 1);
-                            }
-                            if (Memory.transferNeed[thisMineral]) {
-                                Memory.transferNeed[thisMineral] - neededAmount;
                             }
                             return true;
                         }

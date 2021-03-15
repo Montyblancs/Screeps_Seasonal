@@ -405,7 +405,7 @@ module.exports.loop = function() {
     }
 
     //Reset mineral totals
-    if (Game.time % 50 == 0) {
+    if (Game.time % 5 == 0) {
         Memory.mineralTotals = new Object();
         Memory.mineralTotals[RESOURCE_HYDROGEN] = 0;
         Memory.mineralTotals[RESOURCE_OXYGEN] = 0;
@@ -452,6 +452,10 @@ module.exports.loop = function() {
         Memory.mineralTotals[RESOURCE_CATALYZED_ZYNTHIUM_ALKALIDE] = 0;
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ACID] = 0;
         Memory.mineralTotals[RESOURCE_CATALYZED_GHODIUM_ALKALIDE] = 0;
+
+        for (let thisSymbol of SYMBOLS) {
+            Memory.mineralTotals[thisSymbol] = 0;
+        }
     }
 
     //Run base gen on command (new rooms)
@@ -887,7 +891,7 @@ module.exports.loop = function() {
 
                 //Review market data and sell to buy orders
                 //Catalog mineral stockpiles
-                if (Game.time % 50 == 0 && thisRoom.terminal) {
+                if (Game.time % 5 == 0 && thisRoom.terminal) {
                     market_buyers.run(thisRoom, thisRoom.terminal, Memory.mineralList[thisRoom.name]);
 
                     if (thisRoom.terminal.store.getFreeCapacity() < 5000) {
@@ -1205,17 +1209,14 @@ module.exports.loop = function() {
                         Memory.transferLog[thisName][thisEvent.data.resourceType] = 0;
                     }
                     Memory.transferLog[thisName][thisEvent.data.resourceType] += (dropoff ? 1 : -1) * thisEvent.data.amount;
-
-                    if (dropoff) {
-                        if (!Memory.transferNeed[thisEvent.data.resourceType]) {
-                            Memory.transferNeed[thisEvent.data.resourceType] = 0;
-                        }
-                        Memory.transferNeed[thisEvent.data.resourceType] += thisEvent.data.amount;
+                    if (!Memory.transferNeed[thisEvent.data.resourceType]) {
+                        Memory.transferNeed[thisEvent.data.resourceType] = 0;
                     }
+                    Memory.transferNeed[thisEvent.data.resourceType] += (dropoff ? 1 : -1) * thisEvent.data.amount;
 
                     //Todo
                     //Make market code send depositied resource to closest room as top priority
-                    //prevent ScoreRunner from spawning by subtracting reserved resource from check
+                    //prevent ScoreRunner from spawning by subtracting reserved resource from checkwww
                     //Also apply subtraction inside ScoreRunner module
                 }
             }
@@ -1332,24 +1333,22 @@ module.exports.loop = function() {
                         if (Memory.decoderSource[decoderKey2] && Memory.decoderSource[decoderKey2] == thisRoom.name) {
 
                             let modifiedTotal = storageTotal
-                            if (Memory.transferLog.length) {
-                               for (let thisUser of Memory.transferLog) {
-                                    if (thisUser[decoderKey2]) {
-                                        modifiedTotal -= thisUser[decoderKey2];
-                                    }
-                                } 
-                            }                    
-
-                            if (modifiedTotal <= 0) {
-                                continue;
-                            }
+                            if ((Game.rooms[Memory.decoderIndex[decoderKey2]] && Game.rooms[Memory.decoderIndex[decoderKey2]].controller.owner.username == "Montblanc")) {
+                                if (Memory.transferLog.length) {
+                                   for (let thisUser of Memory.transferLog) {
+                                        if (thisUser[decoderKey2]) {
+                                            modifiedTotal += thisUser[decoderKey2];
+                                        }
+                                    } 
+                                }
+                            }                      
 
                             if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= modifiedTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= modifiedTotal)) {
                                 spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
                                 break;
                             } else if ((!Game.rooms[Memory.decoderIndex[decoderKey2]] || Game.rooms[Memory.decoderIndex[decoderKey2]].controller.owner.username != "Montblanc")) {
                                 //Determine if this is a foreign room, if so, lower limits.
-                                if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= modifiedTotal) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= modifiedTotal)) {
+                                if ((thisRoom.storage && thisRoom.storage.store[decoderKey2] && thisRoom.storage.store[decoderKey2] >= 5000) || (thisRoom.terminal && thisRoom.terminal.store[decoderKey2] && thisRoom.terminal.store[decoderKey2] >= 5000)) {
                                     spawn_BuildInstruction.run(Game.spawns[i], 'scoreRunner', Memory.decoderIndex[decoderKey2], energyIndex, '', decoderKey2);
                                     break;
                                 }
@@ -1907,6 +1906,7 @@ function memCheck() {
     Memory.decoderIndex[RESOURCE_SYMBOL_RES] = "W12N4";
     Memory.decoderIndex[RESOURCE_SYMBOL_HE] = "W19N1";
     Memory.decoderIndex[RESOURCE_SYMBOL_SAMEKH] = "W12N9";
+    //Memory.decoderIndex[RESOURCE_SYMBOL_WAW] = "W8N2";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();
