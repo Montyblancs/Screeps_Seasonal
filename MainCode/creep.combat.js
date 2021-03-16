@@ -19,14 +19,14 @@ var creep_combat = {
             //Move towards Foe, stop at rampart
             var lookResult = creep.pos.lookFor(LOOK_STRUCTURES);
             var Foe = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 50, {
-                filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && !Memory.grayList.includes(eCreep.owner.username))
+                filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && (!Memory.grayList.includes(eCreep.owner.username) || (Memory.grayList.includes(eCreep.owner.username) && !determineValidGreylist(eCreep))))
             });
 
             var closeFoe = Game.getObjectById(Memory.towerPickedTarget[creep.room.name]);
             var massAttackFlag = false;
             if (!closeFoe) {
                 closeFoe = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                    filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && !Memory.grayList.includes(eCreep.owner.username))
+                    filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && (!Memory.grayList.includes(eCreep.owner.username) || (Memory.grayList.includes(eCreep.owner.username) && !determineValidGreylist(eCreep))))
                 });
                 massAttackFlag = false;
             }
@@ -157,7 +157,7 @@ var creep_combat = {
                 }
             } else {
                 //The specified target isn't near, but other targets might be.
-                creep.rangedMassAttack();
+                //creep.rangedMassAttack();
             }
         } else {
         	creep.memory.waitingTimer = creep.memory.waitingTimer + 1;
@@ -312,6 +312,23 @@ function moveWithinRamparts(targetDir, creep, closeFoe) {
     }
 
     return bestDir;
+}
+
+function determineValidGreylist(eCreep) {
+    let healCount = 0
+    eCreep.body.forEach(function(thisPart) {
+        if (thisPart.type != CARRY && thisPart.type != MOVE && thisPart.type != HEAL) {
+            return false;
+        }
+        if (thisPart.type == HEAL) {
+            healCount += 1;
+        }
+        if (healCount > 3) {
+            return false;
+        }
+    });
+
+    return true;
 }
 
 module.exports = creep_combat;

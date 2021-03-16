@@ -22,11 +22,11 @@ var creep_scoreRunner = {
                 creep.travelTo(new RoomPosition(25, 25, creep.memory.homeRoom));
             }
         } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {
-            if (southWallRooms.includes(creep.room.name)) {
+            if (southWallRooms.includes(creep.room.name) && creep.pos.y < 25) {
                 creep.travelTo(new RoomPosition(25, 22, "W12N10"));
             } else if (creep.room.name == "W12N10" && creep.pos.y < 23) {
                 creep.travelTo(new RoomPosition(25, 24, "W12N10"))
-            } else if (eastWallRooms.includes(creep.room.name)) {
+            } else if (eastWallRooms.includes(creep.room.name) && creep.pos.x < 25) {
                 creep.travelTo(new RoomPosition(22, 5, "W10N3"));
             } else if (creep.room.name == "W10N3" && creep.pos.x < 22) {
                 creep.travelTo(new RoomPosition(25, 8, "W10N3"))

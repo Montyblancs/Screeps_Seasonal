@@ -627,7 +627,7 @@ function repairCompare(a, b) {
 }
 
 function findContainerWithEnergy(thisCreep, energyMin) {
-    if (thisCreep.room.terminal && thisCreep.room.terminal.store[RESOURCE_ENERGY] > 0) {
+    if (thisCreep.room.terminal && thisCreep.room.terminal.store[RESOURCE_ENERGY] > 0 && (!thisCreep.room.storage || thisCreep.room.storage.store[RESOURCE_ENERGY] <= 150000)) {
         return thisCreep.room.terminal
     }
 	if (thisCreep.memory.priority == 'distributor' && thisCreep.room.storage && thisCreep.room.storage.store[RESOURCE_ENERGY] >= 10000) {

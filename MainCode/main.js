@@ -257,30 +257,16 @@ module.exports.loop = function() {
                     var RampartDirection = ""
                     //Check for hostiles in this room
                     let hostiles = towers[y].room.find(FIND_HOSTILE_CREEPS, {
-                        filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username))
+                        filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && (!Memory.grayList.includes(eCreep.owner.username) || (Memory.grayList.includes(eCreep.owner.username) && !determineValidGreylist(eCreep))))
                     });
                     let pHostiles = towers[y].room.find(FIND_HOSTILE_POWER_CREEPS, {
                         filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username))
                     });
                     if ((hostiles.length > 0 || pHostiles.length > 0) && Memory.roomsUnderAttack.indexOf(towers[y].room.name) === -1) {
-                        let redAlert = false;
-                        for (let thisHostile in hostiles) {
-                            if (Memory.grayList.includes(hostiles[thisHostile].owner.username) && determineValidGreylist(hostiles[thisHostile])) {
-                                //If this creep is a valid configuration, ignore it.
-                                //CARRY,MOVE,3 HEAL
-                                continue;
-                            } else {
-                                redAlert = true;
-                                break;
-                            }
-                        }
-
-                        if (redAlert) {
-                            Memory.roomsUnderAttack.push(towers[y].room.name);
-                            //RampartDirection = "Closed";
-                            if (!determineCreepThreat(hostiles[0], hostiles.length)) {
-                                Memory.roomsPrepSalvager.push(towers[y].room.name);
-                            }
+                        Memory.roomsUnderAttack.push(towers[y].room.name);
+                        //RampartDirection = "Closed";
+                        if (!determineCreepThreat(hostiles[0], hostiles.length)) {
+                            Memory.roomsPrepSalvager.push(towers[y].room.name);
                         }
                     } else if ((hostiles.length == 0 && pHostiles.length == 0) && Memory.roomsUnderAttack.indexOf(towers[y].room.name) != -1) {
                         var UnderAttackPos = Memory.roomsUnderAttack.indexOf(towers[y].room.name);
@@ -2442,7 +2428,7 @@ function orderSellCompare(a, b) {
 }
 
 function determineCreepThreat(eCreep, totalHostiles) {
-    if ((eCreep.owner.username == 'Invader' || eCreep.name.indexOf('Drainer') >= 0) || (eCreep.hitsMax <= 1000 && totalHostiles <= 1) || (Memory.grayList.includes(eCreep.owner.username) && determineValidGreylist(eCreep))) {
+    if ((eCreep.owner.username == 'Invader' || eCreep.name.indexOf('Drainer') >= 0) || (eCreep.hitsMax <= 1000 && totalHostiles <= 1)) {
         return false;
     } else {
         //Determine if this creep is boosted.
