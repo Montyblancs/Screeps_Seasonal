@@ -907,6 +907,17 @@ module.exports.loop = function() {
                         Memory.mineralTotals[roomMinerals[p]] += thisRoom.terminal.store[roomMinerals[p]]
                     }
 
+                    if (thisRoom.storage) {
+                        roomMinerals = _.keys(thisRoom.storage.store);
+                        for (let p = 0; p < roomMinerals.length; p++) {
+                            if (roomMinerals[p] == RESOURCE_ENERGY || roomMinerals[p] == RESOURCE_POWER) {
+                                //Not caring about this
+                                continue;
+                            }
+                            Memory.mineralTotals[roomMinerals[p]] += thisRoom.terminal.store[roomMinerals[p]]
+                        }
+                    }
+                    
                     /*if (thisRoom.storage) {
                         let storedScore = thisRoom.storage.store[RESOURCE_SCORE];
                         if (storedScore) {
@@ -1180,11 +1191,6 @@ module.exports.loop = function() {
                         continue;
                     }
 
-                    //Verify this isn't me
-                    if (eventCreep && eventCreep.owner.username == "Montblanc") {
-                        continue;
-                    }
-
                     //Check if dead
                     if (!eventCreep) {
                         for (let thisTomb of thisRoom.find(FIND_TOMBSTONES)) {
@@ -1201,6 +1207,9 @@ module.exports.loop = function() {
                     }
 
                     let thisName = eventCreep.owner.username;
+                    if (thisName == "Montblanc") {
+                        continue;
+                    }
 
                     if (!Memory.transferLog[thisName]) {
                         Memory.transferLog[thisName] = new Object();
@@ -1334,12 +1343,8 @@ module.exports.loop = function() {
 
                             let modifiedTotal = storageTotal
                             if ((Game.rooms[Memory.decoderIndex[decoderKey2]] && Game.rooms[Memory.decoderIndex[decoderKey2]].controller.owner.username == "Montblanc")) {
-                                if (Memory.transferLog.length) {
-                                   for (let thisUser of Memory.transferLog) {
-                                        if (thisUser[decoderKey2]) {
-                                            modifiedTotal += thisUser[decoderKey2];
-                                        }
-                                    } 
+                                if (Memory.transferNeed[decoderKey2]) {
+                                    modifiedTotal += Memory.transferNeed[decoderKey2];
                                 }
                             }                      
 
@@ -1416,6 +1421,7 @@ module.exports.loop = function() {
         for (const decoderKey in Memory.decoderIndex) {
             let closestRange = 9999;
             let bestRoom = undefined;
+            let isMyRoom = false;
             for (let q = 0; q < roomList.length; q++) {
                 let route = Game.map.findRoute(roomList[q], Memory.decoderIndex[decoderKey]);
                 if (route != ERR_NO_PATH && route.length < closestRange) {
@@ -1425,9 +1431,13 @@ module.exports.loop = function() {
                 if (roomList[q] == Memory.decoderIndex[decoderKey]) {
                     //If own index room, record in public segment.
                     publicSymbols[roomList[q]] = decoderKey
+                    isMyRoom = true;
                 }
             }
             if (bestRoom) {
+            	if (!isMyRoom && bestRoom == 'W18N13') {
+            		bestRoom = 'W11N12'
+            	}
                 Memory.decoderSource[decoderKey] = bestRoom;
             }
         }
@@ -1906,7 +1916,9 @@ function memCheck() {
     Memory.decoderIndex[RESOURCE_SYMBOL_RES] = "W12N4";
     Memory.decoderIndex[RESOURCE_SYMBOL_HE] = "W19N1";
     Memory.decoderIndex[RESOURCE_SYMBOL_SAMEKH] = "W12N9";
-    //Memory.decoderIndex[RESOURCE_SYMBOL_WAW] = "W8N2";
+    Memory.decoderIndex[RESOURCE_SYMBOL_WAW] = "W8N2";
+    Memory.decoderIndex[RESOURCE_SYMBOL_ZAYIN] = "W8N7";
+    Memory.decoderIndex[RESOURCE_SYMBOL_LAMEDH] = "W18N7";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();
@@ -2430,7 +2442,7 @@ function orderSellCompare(a, b) {
 }
 
 function determineCreepThreat(eCreep, totalHostiles) {
-    if ((eCreep.owner.username == 'Invader' || eCreep.name.indexOf('Drainer') >= 0) || (eCreep.hitsMax <= 1000 && totalHostiles <= 1)) {
+    if ((eCreep.owner.username == 'Invader' || eCreep.name.indexOf('Drainer') >= 0) || (eCreep.hitsMax <= 1000 && totalHostiles <= 1) || (Memory.grayList.includes(eCreep.owner.username) && determineValidGreylist(eCreep))) {
         return false;
     } else {
         //Determine if this creep is boosted.

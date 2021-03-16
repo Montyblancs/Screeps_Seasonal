@@ -259,10 +259,12 @@ function getMinerConfig(energyCap, numRoomCreeps, numHarvesters) {
 }
 
 function getDistributorConfig(energyCap, numRoomCreeps, numHarvesters) {
-    if (energyCap < 550 || numRoomCreeps <= 1 || numHarvesters <= 0) {
-        return [MOVE, MOVE, CARRY, CARRY, CARRY, CARRY];
+	if (energyCap < 550) {
+    	return [MOVE, MOVE, CARRY, CARRY, CARRY, CARRY];
+    } else if (energyCap >= 1200) {
+        return [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
     } else {
-        return [MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
+    	return [MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY];
     }
 }
 

@@ -19,16 +19,16 @@ var creep_combat = {
             //Move towards Foe, stop at rampart
             var lookResult = creep.pos.lookFor(LOOK_STRUCTURES);
             var Foe = creep.pos.findInRange(FIND_HOSTILE_CREEPS, 50, {
-                filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username))
+                filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && !Memory.grayList.includes(eCreep.owner.username))
             });
 
             var closeFoe = Game.getObjectById(Memory.towerPickedTarget[creep.room.name]);
             var massAttackFlag = false;
             if (!closeFoe) {
                 closeFoe = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                    filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username))
+                    filter: (eCreep) => (!Memory.whiteList.includes(eCreep.owner.username) && !Memory.grayList.includes(eCreep.owner.username))
                 });
-                massAttackFlag = true;
+                massAttackFlag = false;
             }
 
             if (Foe.length) {

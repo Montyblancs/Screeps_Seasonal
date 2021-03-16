@@ -331,7 +331,7 @@ var spawn_BuildCreeps5 = {
                 repairMax = 0;
             } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] <= 100000) {
                 repairMax = 0;
-            } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 700000) {
+            } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 600000) {
                 repairMax = 2;
             }
             if (Game.flags[thisRoom.name + "RoomOperator"]) {
@@ -366,7 +366,7 @@ var spawn_BuildCreeps5 = {
                     //Something's fucked
                     repairMax = 0;
                     upgraderMax = 0;
-                } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 700000) {
+                } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 600000) {
                     repairMax = 4;
                 }
 
@@ -503,7 +503,7 @@ var spawn_BuildCreeps5 = {
             }
         } else if (Memory.roomsUnderAttack.indexOf(thisRoom.name) != -1 && !thisRoom.controller.safeMode && Memory.roomsPrepSalvager.indexOf(thisRoom.name) == -1 && defenders.length < 6) {
             let Foe = thisRoom.find(FIND_HOSTILE_CREEPS, {
-                filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0 || eCreep.getActiveBodyparts(WORK) > 0) && !Memory.whiteList.includes(eCreep.owner.username))
+                filter: (eCreep) => ((eCreep.getActiveBodyparts(ATTACK) > 0 || eCreep.getActiveBodyparts(RANGED_ATTACK) > 0 || eCreep.getActiveBodyparts(WORK) > 0) && !Memory.whiteList.includes(eCreep.owner.username) && !Memory.grayList.includes(eCreep.owner.username))
             });
 
             let blockedRole = ''
