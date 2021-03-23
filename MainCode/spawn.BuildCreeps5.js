@@ -331,8 +331,10 @@ var spawn_BuildCreeps5 = {
                 repairMax = 0;
             } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] <= 100000) {
                 repairMax = 0;
-            } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 600000) {
+            } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 300000) {
                 repairMax = 2;
+            } else if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 500000) {
+                repairMax = 4
             }
             if (Game.flags[thisRoom.name + "RoomOperator"]) {
                 //The RoomOperator is robust enough to make up for multiple roles

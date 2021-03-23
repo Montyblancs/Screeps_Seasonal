@@ -483,10 +483,10 @@ module.exports.loop = function() {
                        Game.map.visual.text("\u{1F3AE}" + formatNumber(Math.round(thisRoom.storage.store[RESOURCE_SCORE])), new RoomPosition(49, 1, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' }) 
                     }*/
                     if (Memory.repairTarget[thisRoom.name]) {
-                    	let damagedStructure = Game.getObjectById(Memory.repairTarget[thisRoom.name]);
-            			if (damagedStructure && damagedStructure.structureType != STRUCTURE_CONTAINER) {
-            				Game.map.visual.text("\u{1F6E1}" + formatNumber(Math.round(damagedStructure.hits)), new RoomPosition(1, 49, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' })           				
-            			}
+                        let damagedStructure = Game.getObjectById(Memory.repairTarget[thisRoom.name]);
+                        if (damagedStructure && damagedStructure.structureType != STRUCTURE_CONTAINER) {
+                            Game.map.visual.text("\u{1F6E1}" + formatNumber(Math.round(damagedStructure.hits)), new RoomPosition(1, 49, thisRoom.name), { color: '#FFFFFF', backgroundColor: '#000000' })                           
+                        }
                     }
                 }
 
@@ -1267,7 +1267,7 @@ module.exports.loop = function() {
                 if (!Memory.warMode && !Memory.isSpawning) {
                     if (Game.flags[thisRoom.name + "ClaimThis"]) {
                         if (Game.flags["UseDefinedRoute"]) {
-                            spawn_BuildInstruction.run(Game.spawns[i], 'claim', Game.flags[thisRoom.name + "ClaimThis"].pos.roomName, energyIndex, '', 'E50N24;E51N23');
+                            spawn_BuildInstruction.run(Game.spawns[i], 'claim', Game.flags[thisRoom.name + "ClaimThis"].pos.roomName, energyIndex, '', 'W11N19;W11N20;W11N21;W11N23');
                         } else {
                             spawn_BuildInstruction.run(Game.spawns[i], 'claim', Game.flags[thisRoom.name + "ClaimThis"].pos.roomName, energyIndex);
                         }
@@ -1293,7 +1293,7 @@ module.exports.loop = function() {
 
                     if (Game.flags[thisRoom.name + "SendHelper"]) {
                         if (Game.flags["UseDefinedRoute"]) {
-                            spawn_BuildInstruction.run(Game.spawns[i], 'helper', Game.flags[thisRoom.name + "SendHelper"].pos.roomName, energyIndex, '', 'W10S17;W10S20;W5S20;W6S18');
+                            spawn_BuildInstruction.run(Game.spawns[i], 'helper', Game.flags[thisRoom.name + "SendHelper"].pos.roomName, energyIndex, '', 'W11N19;W11N20;W11N21;W11N23');
                         } else {
                             spawn_BuildInstruction.run(Game.spawns[i], 'helper', Game.flags[thisRoom.name + "SendHelper"].pos.roomName, energyIndex);
                         }
@@ -1421,9 +1421,9 @@ module.exports.loop = function() {
                 }
             }
             if (bestRoom) {
-            	if (!isMyRoom && bestRoom == 'W18N13') {
-            		bestRoom = 'W11N12'
-            	}
+                if (!isMyRoom && bestRoom == 'W18N13') {
+                    bestRoom = 'W12N11'
+                }
                 Memory.decoderSource[decoderKey] = bestRoom;
             }
         }
@@ -1905,6 +1905,9 @@ function memCheck() {
     Memory.decoderIndex[RESOURCE_SYMBOL_WAW] = "W8N2";
     Memory.decoderIndex[RESOURCE_SYMBOL_ZAYIN] = "W8N7";
     Memory.decoderIndex[RESOURCE_SYMBOL_LAMEDH] = "W18N7";
+    Memory.decoderIndex[RESOURCE_SYMBOL_DALETH] = "W17N6";
+    Memory.decoderIndex[RESOURCE_SYMBOL_TSADE] = "W2N6";
+    Memory.decoderIndex[RESOURCE_SYMBOL_GIMMEL] = "W3N1";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();
