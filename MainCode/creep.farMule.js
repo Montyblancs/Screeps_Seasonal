@@ -92,7 +92,7 @@ let creep_farMule = {
 	                    if (scoreContainer) {
 	                        //Check resource type & determine if room is overloaded
 	                        //scoreContainer.resourceType
-	                        if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && (!Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] || Game.rooms[creep.memory.homeRoom].storage.store[scoreContainer.resourceType] < 30000)) {
+	                        if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage && Game.rooms[creep.memory.homeRoom].storage.store.getFreeCapacity() > 50000) {
 	                            if (scoreContainer && creep.withdraw(scoreContainer, Object.keys(scoreContainer.store)[0]) == ERR_NOT_IN_RANGE) {
 	                                creep.travelTo(scoreContainer, {
 	                                    ignoreRoads: roadIgnore,

@@ -1062,7 +1062,7 @@ module.exports.loop = function() {
                                     let scoreContainer = Game.rooms[Memory.observationPointers[thisRoom.name][2]].find(FIND_SYMBOL_CONTAINERS, {
                                         filter: (thisScore) => (_.sum(thisScore.store) > 0)
                                     });
-                                    if (scoreContainer.length && thisRoom.storage && (!thisRoom.storage.store[scoreContainer[0].resourceType] || thisRoom.storage.store[scoreContainer[0].resourceType] < 30000)) {
+                                    if (scoreContainer.length && thisRoom.storage && thisRoom.storage.store.getFreeCapacity() > 50000) {
                                         Game.rooms[Memory.observationPointers[thisRoom.name][2]].createFlag(scoreContainer[0].pos.x, scoreContainer[0].pos.y, thisRoom.name + "Loot");
                                         console.log('Observed and created loot flag at ' + Memory.observationPointers[thisRoom.name][2])
                                     }
@@ -1908,6 +1908,9 @@ function memCheck() {
     Memory.decoderIndex[RESOURCE_SYMBOL_DALETH] = "W17N6";
     Memory.decoderIndex[RESOURCE_SYMBOL_TSADE] = "W2N6";
     Memory.decoderIndex[RESOURCE_SYMBOL_GIMMEL] = "W3N1";
+    Memory.decoderIndex[RESOURCE_SYMBOL_TETH] = "W21N2";
+    Memory.decoderIndex[RESOURCE_SYMBOL_ALEPH] = "W29N6";
+    Memory.decoderIndex[RESOURCE_SYMBOL_SIN] = "W6N11";
 
     if (!Memory.decoderSource) {
         Memory.decoderSource = new Object();

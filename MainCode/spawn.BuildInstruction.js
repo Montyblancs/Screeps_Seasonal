@@ -470,7 +470,7 @@ var spawn_BuildInstruction = {
                 break;
             case 'scoreRunner':
                 var runners = _.filter(Game.creeps, (creep) => (creep.memory.priority == 'scoreRunner' && creep.memory.homeRoom == spawn.room.name));
-                let runnerMax = 1;
+                let runnerMax = 6;
                 if (runners.length < runnerMax) {
                     let mConfig = getRunnerBuild(spawn.room.energyCapacityAvailable);
                     let configCost = calculateConfigCost(mConfig);

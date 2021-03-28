@@ -12,6 +12,9 @@ var spawn_BuildCreeps = {
 
         let scrapers = _.filter(RoomCreeps, (creep) => creep.memory.priority == 'scraper');
 
+        //1 source room considerations
+        let upSuppliers = _.filter(RoomCreeps, (creep) => creep.memory.priority == 'upSupplier');
+
         let harvesterMax = 2;
         let builderMax = 2;
         let upgraderMax = 6;
@@ -19,6 +22,7 @@ var spawn_BuildCreeps = {
         let supplierMax = 0;
         let distributorMax = 1;
         let scraperMax = 0;
+        let upSupplierMax = 0;
 
         let strSources = Memory.sourceList[thisRoom.name];
         let assignedSlot1 = _.filter(RoomCreeps, (creep) => creep.memory.sourceLocation == strSources[0] && creep.memory.priority == 'harvester');
@@ -48,6 +52,9 @@ var spawn_BuildCreeps = {
 
         //For Level 4
         if (thisRoom.storage) {
+            if (thisRoom.controller.level >= 7) {
+                upSupplierMax = 1;
+            }
             if (thisRoom.storage.store[RESOURCE_ENERGY] <= 1000) {
                 builderMax = 1;
                 repairMax = 1;
@@ -179,7 +186,7 @@ var spawn_BuildCreeps = {
                 }
             });
             Memory.isSpawning = true;
-        } else if ((harvesters.length < harvesterMax || builders.length < builderMax || upgraders.length < upgraderMax || repairers.length < repairMax || suppliers.length < supplierMax || distributors.length < distributorMax || scrapers.length < scraperMax)) {
+        } else if (harvesters.length < harvesterMax || builders.length < builderMax || upgraders.length < upgraderMax || repairers.length < repairMax || suppliers.length < supplierMax || distributors.length < distributorMax || scrapers.length < scraperMax || upSuppliers.length < upSupplierMax) {
             var prioritizedRole = 'harvester';
             var creepSourceID = '';
 
@@ -209,6 +216,9 @@ var spawn_BuildCreeps = {
                 prioritizedRole = 'builder';
             } else if (repairers.length < repairMax) {
                 prioritizedRole = 'repair';
+            } else if (upSuppliers.length <upSupplierMax ) {
+                prioritizedRole = 'upSupplier';
+                bestWorker = [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
             }
 
             let configCost = calculateConfigCost(bestWorker);
