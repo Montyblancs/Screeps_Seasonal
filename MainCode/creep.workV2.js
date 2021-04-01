@@ -48,17 +48,17 @@ var creep_workV2 = {
                         }
                     } else {
                         //This is a storage Unit
-                        if (creep.transfer(thisUnit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            if (Game.flags[creep.room.name + "storageMiner"]) {
-                                creep.travelTo(Game.flags[creep.room.name + "storageMiner"], {
-                                    maxRooms: 1
-                                })
-                            } else {
-                                creep.travelTo(thisUnit, {
-                                    maxRooms: 1
-                                });
-                            }
-                        } else if (!creep.memory.onContainer) {
+                        if (Game.flags[creep.room.name + "storageMiner"]) {
+                            creep.travelTo(Game.flags[creep.room.name + "storageMiner"], {
+                                maxRooms: 1
+                            })
+                        } else {
+                            creep.travelTo(thisUnit, {
+                                maxRooms: 1
+                            });
+                        }
+                        
+                        if (!creep.memory.onContainer) {
                             creep.memory.onContainer = true;
                         }
                     }

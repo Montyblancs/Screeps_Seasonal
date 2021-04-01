@@ -88,7 +88,11 @@ var spawn_BuildCreeps = {
         }
 
         if (thisRoom.controller.level >= 8) {
-            upgraderMax = 1
+            upgraderMax = 1;
+            scraperMax = 0;
+            if (thisRoom.storage && thisRoom.storage.store[RESOURCE_ENERGY] >= 300000) {
+                repairMax = 6
+            }
         } else if (thisRoom.controller.level >= 6) {
             upgraderMax = upgraderMax / 2
         }
@@ -102,6 +106,16 @@ var spawn_BuildCreeps = {
         let defenderEnergyLim = 780;
         if (thisRoom.controller.level == 4) {
             defenderEnergyLim = 1170;
+        }
+
+        let buildDirections = [TOP, TOP_RIGHT, RIGHT, BOTTOM_RIGHT, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT];
+        let supplierDirection = [];
+        //Determine if this spawn is next to the supply flag, and if so, restrict spawn directions
+        if (Game.flags[thisRoom.name + "Supply"] && Game.flags[thisRoom.name + "Supply"].pos.isNearTo(spawn)) {
+        	let targetDir =  spawn.pos.getDirectionTo(Game.flags[thisRoom.name + "Supply"]);
+        	//Remove direction from buildDirections, add it to supplierDirection
+            buildDirections.splice(buildDirections.indexOf(targetDir), 1);
+            supplierDirection.push(targetDir)
         }
 
         if (RoomCreeps.length == 0 && spawn.canCreateCreep(bareMinConfig) == OK) {
@@ -204,7 +218,7 @@ var spawn_BuildCreeps = {
                 }
 
                 bestWorker = getMinerConfig(thisRoom.energyCapacityAvailable, RoomCreeps.length, harvesters.length);
-            } else if (suppliers.length < supplierMax) {
+            } else if (suppliers.length < supplierMax && supplierDirection.length > 0) {
                 prioritizedRole = 'supplier';
                 bestWorker = [MOVE, CARRY, CARRY];
             } else if (upgraders.length < upgraderMax) {
@@ -224,7 +238,7 @@ var spawn_BuildCreeps = {
             let configCost = calculateConfigCost(bestWorker);
             if (configCost <= Memory.CurrentRoomEnergy[energyIndex]) {
                 Memory.CurrentRoomEnergy[energyIndex] = Memory.CurrentRoomEnergy[energyIndex] - configCost;
-                if (prioritizedRole == 'scraper') {
+                if (prioritizedRole == 'supplier') {
                     spawn.spawnCreep(bestWorker, prioritizedRole + '_' + spawn.name + '_' + Game.time, {
                         memory: {
                             priority: prioritizedRole,
@@ -232,7 +246,19 @@ var spawn_BuildCreeps = {
                             targetResource: undefined,
                             fromSpawn: spawn.id,
                             homeRoom: thisRoom.name
-                        }
+                        },
+                        directions: supplierDirection
+                    });
+                } else if (prioritizedRole == 'scraper') {
+                    spawn.spawnCreep(bestWorker, prioritizedRole + '_' + spawn.name + '_' + Game.time, {
+                        memory: {
+                            priority: prioritizedRole,
+                            linkID: strSources[1],
+                            targetResource: undefined,
+                            fromSpawn: spawn.id,
+                            homeRoom: thisRoom.name
+                        },
+                        directions: buildDirections
                     });
                 } else {
                     spawn.spawnCreep(bestWorker, prioritizedRole + '_' + spawn.name + '_' + Game.time, {
@@ -243,7 +269,8 @@ var spawn_BuildCreeps = {
                             homeRoom: thisRoom.name,
                             deathWarn: _.size(bestWorker) * 6,
                             structureTarget: undefined
-                        }
+                        },
+                        directions: buildDirections
                     });
                 }
             }

@@ -8,24 +8,14 @@ var creep_scoreRunner = {
         let northeastWallRooms = ["W9N10", "W8N10", "W6N10", "W5N10", "W4N10", "W3N10", "W2N10", "W1N10"]
         let ughExceptions = ["W10N12", "W10N11", "W11N11"]
         if (creep.room.name != creep.memory.homeRoom && creep.store.getFreeCapacity() >= creep.store.getCapacity()) {
-            if (creep.memory.travelDistance && creep.ticksToLive <= creep.memory.travelDistance) {
-                //Don't waste time
-                creep.suicide();
-            }
-
-            if (southWallRooms.includes(creep.room.name) && creep.pos.y >= 25) {
-                creep.travelTo(new RoomPosition(24, 32, "W12N10"));
-            } else if (creep.room.name == "W12N10" && creep.pos.y > 22) {
-                creep.travelTo(new RoomPosition(25, 22, "W12N10"))
-            } else if (creep.room.name == "W12N10" && creep.pos.y <= 22) {
-                creep.travelTo(new RoomPosition(25, 25, "W11N11"))
-            } else if (Game.rooms[creep.memory.homeRoom] && Game.rooms[creep.memory.homeRoom].storage) {
-                creep.travelTo(Game.rooms[creep.memory.homeRoom].storage);
-            } else {
-                creep.travelTo(new RoomPosition(25, 25, creep.memory.homeRoom));
-            }
+            //Vast majority of runs are one way only.
+            creep.suicide();
         } else if (creep.room.name != creep.memory.destination && creep.store.getFreeCapacity() < creep.store.getCapacity()) {
-            if (creep.room.name == "W14N10" && creep.pos.y < 25) {
+            if (creep.room.name == "W20N10" && creep.pos.y > 25) {
+                creep.travelTo(new RoomPosition(24, 7, "W20N7"))
+            }else if (creep.room.name == "W11N12" && creep.memory.destination != "W11N12") {
+                creep.travelTo(new RoomPosition(9, 3, "W11N10"))
+            } else if (creep.room.name == "W14N10" && creep.pos.y < 25) {
                 creep.travelTo(new RoomPosition(3, 6, "W13N10"));
             } else if (ughExceptions.includes(creep.room.name)) {
                 creep.travelTo(new RoomPosition(9, 3, "W11N10"))

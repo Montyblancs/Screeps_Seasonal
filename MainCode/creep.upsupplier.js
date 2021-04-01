@@ -98,6 +98,10 @@ var creep_upSupplier = {
                     } else if (transferResult == OK){
                         determineIfEmptyEnergy(upLink, creep);
                     }
+                } else {
+                    creep.travelTo(creep.room.controller, {
+                        maxRooms:1
+                    });
                 }
             }
         }

@@ -1254,7 +1254,7 @@ module.exports.loop = function() {
                 if (!Memory.isSpawning) {
                     if (Memory.RoomsAt5.indexOf(thisRoom.name) == -1) {
                         if (!Game.flags["DoNotBuild"]) {
-                            if (!Memory.roomCreeps[thisRoom.name]) {
+                            if (!Memory.roomCreeps[thisRoom.name] && thisRoom.controller.level < 5) {
                                 Memory.roomCreeps[thisRoom.name] = thisRoom.find(FIND_MY_CREEPS);
                             }
                             spawn_BuildCreeps.run(Game.spawns[i], bestWorkerConfig, thisRoom, Memory.roomCreeps[thisRoom.name], energyIndex);
@@ -1964,7 +1964,7 @@ function memCheck() {
         Memory.ordersFilled = [];
     }
     Memory.whiteList = [];
-    Memory.grayList = ["Tigga", "Cub"];
+    Memory.grayList = ["Tigga", "Cub", "Mirroar"];
     if (!Memory.blockedRooms) {
         Memory.blockedRooms = [];
     }
